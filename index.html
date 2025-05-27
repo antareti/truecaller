@@ -2,80 +2,115 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>TrueCaller HACKER</title>
   <style>
+    * {
+      box-sizing: border-box;
+    }
+
     body {
       margin: 0;
       font-family: Arial, sans-serif;
-      background: #f4f6f9;
+      background: #e9ecf1;
       color: #333;
     }
+
     header {
-      background-color: #0066cc;
-      color: white;
+      background-color: #0073e6;
+      color: #fff;
       padding: 1rem;
       text-align: center;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     }
+
     main {
+      max-width: 700px;
+      margin: 2rem auto;
       padding: 2rem;
-      max-width: 600px;
-      margin: 0 auto;
-      background: white;
-      border-radius: 8px;
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
     }
+
     h2 {
       margin-top: 0;
+      font-size: 1.5rem;
+      color: #0073e6;
     }
+
     .input-group {
-      margin-bottom: 1rem;
+      margin-bottom: 1.5rem;
     }
+
+    label {
+      display: block;
+      font-weight: bold;
+    }
+
     input {
       width: 100%;
-      padding: 0.5rem;
+      padding: 0.6rem;
       font-size: 1rem;
-      margin-top: 0.5rem;
+      margin-top: 0.4rem;
       border: 1px solid #ccc;
-      border-radius: 4px;
+      border-radius: 6px;
     }
+
     button {
       width: 100%;
-      padding: 0.7rem;
+      padding: 0.8rem;
       font-size: 1rem;
-      background-color: #0066cc;
-      color: white;
+      background-color: #0073e6;
+      color: #fff;
       border: none;
-      border-radius: 4px;
+      border-radius: 6px;
       cursor: pointer;
-      margin-bottom: 1rem;
+      transition: background-color 0.3s;
+      margin-bottom: 1.2rem;
     }
+
+    button:hover {
+      background-color: #005bb5;
+    }
+
     .profiles-list {
       margin-top: 2rem;
     }
+
     .profile {
       display: flex;
       align-items: center;
-      background: #f0f0f0;
+      background: #f1f1f1;
       border-radius: 8px;
       padding: 1rem;
       margin-bottom: 1rem;
       gap: 1rem;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.05);
     }
+
     .profile img {
-      width: 80px;
-      height: 80px;
+      width: 70px;
+      height: 70px;
       border-radius: 50%;
       object-fit: cover;
+      border: 2px solid #ccc;
     }
-    .profile-info {
-      flex-grow: 1;
+
+    .profile-info h3 {
+      margin: 0 0 0.5rem 0;
+      font-size: 1.2rem;
     }
+
+    .profile-info p {
+      margin: 0.3rem 0;
+    }
+
     .no-results {
-      margin-top: 2rem;
+      text-align: center;
       color: #cc0000;
       font-weight: bold;
-      text-align: center;
+      margin-top: 2rem;
     }
   </style>
 </head>
@@ -83,21 +118,23 @@
   <header>
     <h1>TrueCaller HACKER</h1>
   </header>
+
   <main>
     <h2>Поиск по номеру или имени</h2>
+
     <div class="input-group">
       <label for="number">Номер телефона:</label>
       <input type="text" id="number" placeholder="Например, +79991234567" />
     </div>
-    <button onclick="searchByNumber()">Найти по номеру</button>
+    <button onclick="searchBy('number')">Найти по номеру</button>
 
     <div class="input-group">
       <label for="name">Имя:</label>
       <input type="text" id="name" placeholder="Например, Иван Иванов" />
     </div>
-    <button onclick="searchByName()">Найти по имени</button>
+    <button onclick="searchBy('name')">Найти по имени</button>
 
-    <div class="profiles-list" id="profiles-list"></div>
+    <div id="profiles-list" class="profiles-list"></div>
   </main>
 
   <script>
@@ -112,52 +149,52 @@
       { number: "+79801234567", name: "Анна Федорова", city: "Воронеж", operator: "Теле2", photo: "https://randomuser.me/api/portraits/women/38.jpg" }
     ];
 
-    function searchByNumber() {
-      const input = document.getElementById("number").value.trim();
-      if (input === "") {
+    function searchBy(type) {
+      const inputValue = document.getElementById(type).value.trim().toLowerCase();
+      if (!inputValue) {
         displayProfiles(fakeData);
         return;
       }
-      const results = fakeData.filter(entry =>
-        entry.number.toLowerCase().includes(input.toLowerCase())
-      );
-      displayProfiles(results.length ? results : fakeData);
-    }
 
-    function searchByName() {
-      const input = document.getElementById("name").value.trim().toLowerCase();
-      if (input === "") {
-        displayProfiles(fakeData);
-        return;
+      const results = fakeData.filter(entry =>
+        entry[type].toLowerCase().includes(inputValue)
+      );
+
+      if (results.length) {
+        displayProfiles(results);
+      } else {
+        displayNoResults();
       }
-      const results = fakeData.filter(entry =>
-        entry.name.toLowerCase().includes(input)
-      );
-      displayProfiles(results.length ? results : fakeData);
     }
 
-    function displayProfiles(results) {
+    function displayProfiles(dataArray) {
       const container = document.getElementById("profiles-list");
       container.innerHTML = "";
 
-      results.forEach(data => {
+      dataArray.forEach(person => {
         const profileDiv = document.createElement("div");
         profileDiv.className = "profile";
 
         profileDiv.innerHTML = `
-          <img src="${data.photo}" alt="Фото ${data.name}" />
+          <img src="${person.photo}" alt="Фото ${person.name}" />
           <div class="profile-info">
-            <h3>${data.name}</h3>
-            <p><strong>Номер:</strong> ${data.number}</p>
-            <p><strong>Город:</strong> ${data.city}</p>
-            <p><strong>Оператор:</strong> ${data.operator}</p>
+            <h3>${person.name}</h3>
+            <p><strong>Номер:</strong> ${person.number}</p>
+            <p><strong>Город:</strong> ${person.city}</p>
+            <p><strong>Оператор:</strong> ${person.operator}</p>
           </div>
         `;
+
         container.appendChild(profileDiv);
       });
     }
 
-    // Показываем всех пользователей при загрузке
+    function displayNoResults() {
+      const container = document.getElementById("profiles-list");
+      container.innerHTML = `<div class="no-results">Ничего не найдено</div>`;
+    }
+
+    // При загрузке страницы показываем всех
     window.onload = () => displayProfiles(fakeData);
   </script>
 </body>
