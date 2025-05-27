@@ -2,65 +2,46 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>TrueCaller HACKER</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Поиск пользователей</title>
   <style>
     body {
-      margin: 0;
       font-family: Arial, sans-serif;
-      background: #f4f6f9;
-      color: #333;
+      background-color: #f0f2f5;
+      padding: 20px;
     }
-    header {
-      background-color: #0066cc;
-      color: white;
-      padding: 1rem;
+    h1 {
       text-align: center;
     }
-    main {
-      padding: 2rem;
-      max-width: 600px;
-      margin: 0 auto;
-      background: white;
-      border-radius: 8px;
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    .search {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 20px;
     }
-    h2 {
-      margin-top: 0;
-    }
-    .input-group {
-      margin-bottom: 1rem;
-    }
-    input {
-      width: 100%;
-      padding: 0.5rem;
-      font-size: 1rem;
-      margin-top: 0.5rem;
-      border: 1px solid #ccc;
-      border-radius: 4px;
+    input[type="text"] {
+      padding: 10px;
+      font-size: 16px;
+      width: 250px;
     }
     button {
-      width: 100%;
-      padding: 0.7rem;
-      font-size: 1rem;
-      background-color: #0066cc;
-      color: white;
-      border: none;
-      border-radius: 4px;
+      padding: 10px 15px;
+      font-size: 16px;
       cursor: pointer;
-      margin-bottom: 1rem;
     }
-    .profiles-list {
-      margin-top: 2rem;
+    #results {
+      max-width: 800px;
+      margin: 0 auto;
     }
     .profile {
+      background-color: white;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      padding: 15px;
+      margin-bottom: 15px;
       display: flex;
       align-items: center;
-      background: #f0f0f0;
-      border-radius: 8px;
-      padding: 1rem;
-      margin-bottom: 1rem;
-      gap: 1rem;
+      gap: 15px;
     }
     .profile img {
       width: 80px;
@@ -68,69 +49,82 @@
       border-radius: 50%;
       object-fit: cover;
     }
-    .profile-info {
-      flex-grow: 1;
-    }
-    .no-results {
-      margin-top: 2rem;
-      color: #cc0000;
-      font-weight: bold;
-      text-align: center;
-    }
   </style>
 </head>
 <body>
-  <header>
-    <h1>TrueCaller HACKER</h1>
-  </header>
-  <main>
-    <h2>Поиск по номеру или имени</h2>
-    <div class="input-group">
-      <label for="number">Номер телефона:</label>
-      <input type="text" id="number" placeholder="Например, +79991234567" />
-    </div>
-    <button onclick="searchByNumber()">Найти по номеру</button>
+  <h1>Поиск пользователей</h1>
+  <div class="search">
+    <input type="text" id="number" placeholder="Введите номер телефона" />
+    <button onclick="searchByNumber()">Поиск по номеру</button>
+  </div>
+  <div class="search">
+    <input type="text" id="name" placeholder="Введите имя" />
+    <button onclick="searchByName()">Поиск по имени</button>
+  </div>
 
-    <div class="input-group">
-      <label for="name">Имя:</label>
-      <input type="text" id="name" placeholder="Например, Иван Иванов" />
-    </div>
-    <button onclick="searchByName()">Найти по имени</button>
-
-    <div class="profiles-list" id="profiles-list"></div>
-  </main>
+  <div id="results"></div>
 
   <script>
     const fakeData = [
-      { number: "+79991234567", name: "Иван Иванов", city: "Москва", operator: "МТС", photo: "https://randomuser.me/api/portraits/men/32.jpg" },
-      { number: "+79261234567", name: "Ольга Смирнова", city: "Санкт-Петербург", operator: "Билайн", photo: "https://randomuser.me/api/portraits/women/44.jpg" },
-      { number: "+79876543210", name: "Алексей Петров", city: "Новосибирск", operator: "Мегафон", photo: "https://randomuser.me/api/portraits/men/45.jpg" },
-      { number: "+79161239876", name: "Елена Кузнецова", city: "Екатеринбург", operator: "Теле2", photo: "https://randomuser.me/api/portraits/women/55.jpg" },
-      { number: "+79501234567", name: "Дмитрий Смирнов", city: "Казань", operator: "МТС", photo: "https://randomuser.me/api/portraits/men/12.jpg" },
-      { number: "+79651234567", name: "Марина Волкова", city: "Краснодар", operator: "Билайн", photo: "https://randomuser.me/api/portraits/women/22.jpg" },
-      { number: "+79761234567", name: "Сергей Козлов", city: "Ростов-на-Дону", operator: "Мегафон", photo: "https://randomuser.me/api/portraits/men/36.jpg" },
-      { number: "+79801234567", name: "Анна Федорова", city: "Воронеж", operator: "Теле2", photo: "https://randomuser.me/api/portraits/women/38.jpg" },
-      // Добавь ещё по желанию...
+      {
+        number: "+79991234567",
+        name: "Иван Иванов",
+        city: "Москва",
+        operator: "МТС",
+        photo: "https://randomuser.me/api/portraits/men/32.jpg",
+      },
+      {
+        number: "+79261234567",
+        name: "Ольга Смирнова",
+        city: "Санкт-Петербург",
+        operator: "Билайн",
+        photo: "https://randomuser.me/api/portraits/women/44.jpg",
+      },
+      {
+        number: "+79161234567",
+        name: "Иван Петров",
+        city: "Казань",
+        operator: "Мегафон",
+        photo: "https://randomuser.me/api/portraits/men/55.jpg",
+      },
+      {
+        number: "+79031234567",
+        name: "Иван Иванов",
+        city: "Новосибирск",
+        operator: "Теле2",
+        photo: "https://randomuser.me/api/portraits/men/88.jpg",
+      },
+      {
+        number: "+79851234567",
+        name: "Мария Кузнецова",
+        city: "Екатеринбург",
+        operator: "МТС",
+        photo: "https://randomuser.me/api/portraits/women/66.jpg",
+      },
     ];
 
     function searchByNumber() {
       const number = document.getElementById("number").value.trim();
-      const results = fakeData.filter(entry => entry.number.includes(number) && number !== "");
-      displayProfiles(results);
+      const results = fakeData.filter(entry =>
+        entry.number.includes(number)
+      );
+      displayResults(results);
     }
 
     function searchByName() {
       const name = document.getElementById("name").value.trim().toLowerCase();
-      const results = fakeData.filter(entry => entry.name.toLowerCase().includes(name) && name !== "");
-      displayProfiles(results);
+      const results = fakeData.filter(entry =>
+        entry.name.toLowerCase().includes(name)
+      );
+      displayResults(results);
     }
 
-    function displayProfiles(results) {
-      const container = document.getElementById("profiles-list");
-      container.innerHTML = "";
+    function displayResults(results) {
+      const resultsDiv = document.getElementById("results");
+      resultsDiv.innerHTML = "";
 
       if (results.length === 0) {
-        container.innerHTML = '<p class="no-results">Пользователи не найдены.</p>';
+        resultsDiv.innerHTML = "<p><strong>Пользователи не найдены</strong></p>";
         return;
       }
 
@@ -139,15 +133,16 @@
         profileDiv.className = "profile";
 
         profileDiv.innerHTML = `
-          <img src="${data.photo}" alt="Фото ${data.name}" />
-          <div class="profile-info">
+          <img src="${data.photo}" alt="Фото" />
+          <div>
             <h3>${data.name}</h3>
-            <p><strong>Номер:</strong> ${data.number}</p>
             <p><strong>Город:</strong> ${data.city}</p>
             <p><strong>Оператор:</strong> ${data.operator}</p>
+            <p><strong>Телефон:</strong> ${data.number}</p>
           </div>
         `;
-        container.appendChild(profileDiv);
+
+        resultsDiv.appendChild(profileDiv);
       });
     }
   </script>
