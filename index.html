@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>TrueCaller Симулятор</title>
   <style>
     body {
@@ -69,19 +69,19 @@
     <h2>Поиск по номеру или имени</h2>
     <div class="input-group">
       <label for="number">Номер телефона:</label>
-      <input type="text" id="number" placeholder="Например, +79991234567">
+      <input type="text" id="number" placeholder="Например, +79991234567" />
     </div>
     <button onclick="searchByNumber()">Найти по номеру</button>
 
     <div class="input-group">
       <label for="name">Имя:</label>
-      <input type="text" id="name" placeholder="Например, Иван Иванов">
+      <input type="text" id="name" placeholder="Например, Иван Иванов" />
     </div>
     <button onclick="searchByName()">Найти по имени</button>
 
     <div class="profile" id="profile" style="display: none">
       <h3 id="p-name"></h3>
-      <img id="p-photo" src="" alt="Фото">
+      <img id="p-photo" src="" alt="Фото" />
       <p><strong>Город:</strong> <span id="p-city"></span></p>
       <p><strong>Оператор:</strong> <span id="p-operator"></span></p>
     </div>
@@ -94,41 +94,48 @@
         name: "Иван Иванов",
         city: "Москва",
         operator: "МТС",
-        photo: "https://randomuser.me/api/portraits/men/32.jpg"
+        photo: "https://randomuser.me/api/portraits/men/32.jpg",
       },
       {
         number: "+79261234567",
         name: "Ольга Смирнова",
         city: "Санкт-Петербург",
         operator: "Билайн",
-        photo: "https://randomuser.me/api/portraits/women/44.jpg"
-      }
+        photo: "https://randomuser.me/api/portraits/women/44.jpg",
+      },
     ];
 
+    function getRandomProfile() {
+      return fakeData[Math.floor(Math.random() * fakeData.length)];
+    }
+
     function searchByNumber() {
-      const number = document.getElementById('number').value;
-      const result = fakeData.find(entry => entry.number === number);
+      const number = document.getElementById("number").value.trim();
+      let result = fakeData.find((entry) => entry.number === number);
+      if (!result) {
+        result = getRandomProfile();
+      }
       displayProfile(result);
     }
 
     function searchByName() {
-      const name = document.getElementById('name').value;
-      const result = fakeData.find(entry => entry.name.toLowerCase() === name.toLowerCase());
+      const name = document.getElementById("name").value.trim().toLowerCase();
+      let result = fakeData.find(
+        (entry) => entry.name.toLowerCase() === name
+      );
+      if (!result) {
+        result = getRandomProfile();
+      }
       displayProfile(result);
     }
 
     function displayProfile(data) {
-      const profile = document.getElementById('profile');
-      if (!data) {
-        profile.innerHTML = '<p>Пользователь не найден.</p>';
-        profile.style.display = 'block';
-        return;
-      }
-      document.getElementById('p-name').textContent = data.name;
-      document.getElementById('p-photo').src = data.photo;
-      document.getElementById('p-city').textContent = data.city;
-      document.getElementById('p-operator').textContent = data.operator;
-      profile.style.display = 'block';
+      const profile = document.getElementById("profile");
+      document.getElementById("p-name").textContent = data.name;
+      document.getElementById("p-photo").src = data.photo;
+      document.getElementById("p-city").textContent = data.city;
+      document.getElementById("p-operator").textContent = data.operator;
+      profile.style.display = "block";
     }
   </script>
 </body>
