@@ -71,12 +71,6 @@
     .profile-info {
       flex-grow: 1;
     }
-    .no-results {
-      margin-top: 2rem;
-      color: #cc0000;
-      font-weight: bold;
-      text-align: center;
-    }
   </style>
 </head>
 <body>
@@ -98,7 +92,6 @@
     <button onclick="searchByName()">Найти по имени</button>
 
     <div class="profiles-list" id="profiles-list"></div>
-    <div class="no-results" id="no-results" style="display: none;">Результатов не найдено</div>
   </main>
 
   <script>
@@ -109,33 +102,35 @@
       { number: "+79161239876", name: "Елена Кузнецова", city: "Екатеринбург", operator: "Теле2", photo: "https://randomuser.me/api/portraits/women/55.jpg" }
     ];
 
+    function getRandomProfile() {
+      return fakeData[Math.floor(Math.random() * fakeData.length)];
+    }
+
     function searchByNumber() {
       const input = document.getElementById("number").value.trim();
-      const results = fakeData.filter(entry =>
+      let results = fakeData.filter(entry =>
         entry.number.toLowerCase().includes(input.toLowerCase())
       );
+      if (results.length === 0) {
+        results = [getRandomProfile()];
+      }
       displayProfiles(results);
     }
 
     function searchByName() {
       const input = document.getElementById("name").value.trim().toLowerCase();
-      const results = fakeData.filter(entry =>
+      let results = fakeData.filter(entry =>
         entry.name.toLowerCase().includes(input)
       );
+      if (results.length === 0) {
+        results = [getRandomProfile()];
+      }
       displayProfiles(results);
     }
 
     function displayProfiles(results) {
       const container = document.getElementById("profiles-list");
-      const noResults = document.getElementById("no-results");
       container.innerHTML = "";
-
-      if (results.length === 0) {
-        noResults.style.display = "block";
-        return;
-      }
-
-      noResults.style.display = "none";
 
       results.forEach(data => {
         const profileDiv = document.createElement("div");
