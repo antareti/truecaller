@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Smart Property Estimator</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f7f9fc;
+      margin: 0;
+      padding: 0;
+      color: #333;
+    }
+    header {
+      background: #003366;
+      color: white;
+      padding: 1em;
+      text-align: center;
+    }
+    main {
+      max-width: 600px;
+      margin: 2em auto;
+      padding: 1em;
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    label {
+      display: block;
+      margin-top: 1em;
+    }
+    input, select {
+      width: 100%;
+      padding: 0.5em;
+      margin-top: 0.25em;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    button {
+      margin-top: 1.5em;
+      padding: 0.75em;
+      width: 100%;
+      background: #0055aa;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      font-size: 1em;
+    }
+    .result {
+      margin-top: 2em;
+      font-size: 1.2em;
+      font-weight: bold;
+      color: #0055aa;
+    }
+    footer {
+      text-align: center;
+      margin-top: 2em;
+      padding: 1em;
+      font-size: 0.9em;
+      color: #666;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Smart Property Estimator</h1>
+  </header>
+  <main>
+    <form id="estimatorForm">
+      <label>City:<input type="text" id="city" required></label>
+      <label>District:<input type="text" id="district" required></label>
+      <label>Property Type:
+        <select id="type">
+          <option value="apartment">Apartment</option>
+          <option value="house">House</option>
+        </select>
+      </label>
+      <label>Size (m²):<input type="number" id="size" required></label>
+      <label>Floor:<input type="number" id="floor"></label>
+      <label>Year Built:<input type="number" id="year"></label>
+      <label>Condition:
+        <select id="condition">
+          <option value="renovated">Renovated</option>
+          <option value="not-renovated">Not Renovated</option>
+        </select>
+      </label>
+      <button type="submit">Estimate Value</button>
+    </form>
+    <div class="result" id="result"></div>
+  </main>
+  <footer>
+    &copy; 2025 Smart Property Estimator. All rights reserved.
+  </footer>
+
+  <script>
+    document.getElementById('estimatorForm').addEventListener('submit', function (e) {
+      e.preventDefault();
+      const size = parseFloat(document.getElementById('size').value);
+      const type = document.getElementById('type').value;
+      const condition = document.getElementById('condition').value;
+      const year = parseInt(document.getElementById('year').value);
+
+      let basePricePerSqM = 1200;
+      if (type === 'house') basePricePerSqM = 1000;
+      if (condition === 'renovated') basePricePerSqM += 200;
+      if (year && year > 2015) basePricePerSqM += 100;
+      if (year && year < 1980) basePricePerSqM -= 150;
+
+      const estimate = size * basePricePerSqM;
+
+      document.getElementById('result').textContent =
+        `Estimated Property Value: $${estimate.toLocaleString(undefined, {minimumFractionDigits: 0})}`;
+    });
+  </script>
+</body>
+</html>
