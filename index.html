@@ -113,25 +113,32 @@
     ];
 
     function searchByNumber() {
-      const number = document.getElementById("number").value.trim();
-      const results = fakeData.filter(entry => entry.number.includes(number) && number !== "");
-      displayProfiles(results);
+      const input = document.getElementById("number").value.trim();
+      if (input === "") {
+        displayProfiles(fakeData);
+        return;
+      }
+      const results = fakeData.filter(entry =>
+        entry.number.toLowerCase().includes(input.toLowerCase())
+      );
+      displayProfiles(results.length ? results : fakeData);
     }
 
     function searchByName() {
-      const name = document.getElementById("name").value.trim().toLowerCase();
-      const results = fakeData.filter(entry => entry.name.toLowerCase().includes(name) && name !== "");
-      displayProfiles(results);
+      const input = document.getElementById("name").value.trim().toLowerCase();
+      if (input === "") {
+        displayProfiles(fakeData);
+        return;
+      }
+      const results = fakeData.filter(entry =>
+        entry.name.toLowerCase().includes(input)
+      );
+      displayProfiles(results.length ? results : fakeData);
     }
 
     function displayProfiles(results) {
       const container = document.getElementById("profiles-list");
       container.innerHTML = "";
-
-      if (results.length === 0) {
-        container.innerHTML = '<p class="no-results">Пользователи не найдены.</p>';
-        return;
-      }
 
       results.forEach(data => {
         const profileDiv = document.createElement("div");
@@ -149,6 +156,9 @@
         container.appendChild(profileDiv);
       });
     }
+
+    // Показываем всех пользователей при загрузке
+    window.onload = () => displayProfiles(fakeData);
   </script>
 </body>
 </html>
