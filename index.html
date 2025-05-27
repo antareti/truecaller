@@ -1,152 +1,114 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>TrueCaller HACKER</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Truecaller Хак</title>
+  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
   <style>
     body {
       margin: 0;
-      font-family: Arial, sans-serif;
-      background: #f4f6f9;
-      color: #333;
-    }
-    header {
-      background-color: #0066cc;
-      color: white;
-      padding: 1rem;
-      text-align: center;
-    }
-    main {
-      padding: 2rem;
-      max-width: 600px;
-      margin: 0 auto;
-      background: white;
-      border-radius: 8px;
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-    }
-    h2 {
-      margin-top: 0;
-    }
-    .input-group {
-      margin-bottom: 1rem;
-    }
-    input {
-      width: 100%;
-      padding: 0.5rem;
-      font-size: 1rem;
-      margin-top: 0.5rem;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-    }
-    button {
-      width: 100%;
-      padding: 0.7rem;
-      font-size: 1rem;
-      background-color: #0066cc;
-      color: white;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
-      margin-bottom: 1rem;
-    }
-    .profiles-list {
-      margin-top: 2rem;
-    }
-    .profile {
+      font-family: 'Share Tech Mono', monospace;
+      background: radial-gradient(circle at center, #0f2027, #203a43, #2c5364);
+      color: #00ffe0;
       display: flex;
+      flex-direction: column;
       align-items: center;
-      background: #f0f0f0;
+      justify-content: center;
+      min-height: 100vh;
+      overflow: hidden;
+    }
+
+    h1 {
+      font-size: 3em;
+      text-shadow: 0 0 10px #00ffe0;
+      position: relative;
+      animation: glitch 1s infinite;
+    }
+
+    @keyframes glitch {
+      0% { text-shadow: 2px 2px #ff00c8; }
+      50% { text-shadow: -2px -2px #00ffe0; }
+      100% { text-shadow: 2px 2px #ff00c8; }
+    }
+
+    .form-container {
+      margin-top: 2em;
+      background: rgba(0, 0, 0, 0.6);
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 20px #00ffe0;
+    }
+
+    input[type="tel"] {
+      padding: 10px;
+      font-size: 1.2em;
+      border: none;
+      border-radius: 5px;
+      width: 250px;
+      margin-right: 10px;
+    }
+
+    button {
+      padding: 10px 20px;
+      font-size: 1.2em;
+      border: none;
+      border-radius: 5px;
+      background-color: #00ffe0;
+      color: #000;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #00c9b7;
+      box-shadow: 0 0 10px #00ffe0;
+    }
+
+    .footer {
+      position: absolute;
+      bottom: 10px;
+      font-size: 0.8em;
+      color: #bbb;
+    }
+
+    .result {
+      margin-top: 20px;
+      padding: 15px;
+      background: rgba(0, 0, 0, 0.5);
+      border: 1px solid #00ffe0;
       border-radius: 8px;
-      padding: 1rem;
-      margin-bottom: 1rem;
-      gap: 1rem;
-    }
-    .profile img {
-      width: 80px;
-      height: 80px;
-      border-radius: 50%;
-      object-fit: cover;
-    }
-    .profile-info {
-      flex-grow: 1;
+      box-shadow: 0 0 10px #00ffe0;
+      display: none;
     }
   </style>
 </head>
 <body>
-  <header>
-    <h1>TrueCaller HACKER</h1>
-  </header>
-  <main>
-    <h2>Поиск по номеру или имени</h2>
-    <div class="input-group">
-      <label for="number">Номер телефона:</label>
-      <input type="text" id="number" placeholder="Например, +79991234567" />
-    </div>
-    <button onclick="searchByNumber()">Найти по номеру</button>
-
-    <div class="input-group">
-      <label for="name">Имя:</label>
-      <input type="text" id="name" placeholder="Например, Иван Иванов" />
-    </div>
-    <button onclick="searchByName()">Найти по имени</button>
-
-    <div class="profiles-list" id="profiles-list"></div>
-  </main>
+  <h1>TRUECALLER-X</h1>
+  <div class="form-container">
+    <input type="tel" id="phone" placeholder="+7 (___) ___-__-__" maxlength="18">
+    <button onclick="showFakeResult()">Пробить номер</button>
+  </div>
+  <div class="result" id="resultBox">
+    <p><strong>Имя:</strong> <span id="name">Иван Иванов</span></p>
+    <p><strong>Оператор:</strong> МТС</p>
+    <p><strong>Регион:</strong> Москва</p>
+    <p><strong>Статус:</strong> Проверен ✅</p>
+  </div>
+  <div class="footer">2025 © Hackpack Tools | Telegram: @vipcam1977</div>
 
   <script>
-    const fakeData = [
-      { number: "+79991234567", name: "Иван Иванов", city: "Москва", operator: "МТС", photo: "https://randomuser.me/api/portraits/men/32.jpg" },
-      { number: "+79261234567", name: "Ольга Смирнова", city: "Санкт-Петербург", operator: "Билайн", photo: "https://randomuser.me/api/portraits/women/44.jpg" },
-      { number: "+79876543210", name: "Алексей Петров", city: "Новосибирск", operator: "Мегафон", photo: "https://randomuser.me/api/portraits/men/45.jpg" },
-      { number: "+79161239876", name: "Елена Кузнецова", city: "Екатеринбург", operator: "Теле2", photo: "https://randomuser.me/api/portraits/women/55.jpg" }
+    const names = [
+      "Иван Иванов", "Сергей Смирнов", "Алексей Кузнецов",
+      "Дмитрий Попов", "Николай Лебедев", "Владимир Соколов",
+      "Антон Орлов", "Павел Тарасов", "Юрий Фёдоров",
+      "Игорь Васильев", "Евгений Морозов"
     ];
 
-    function getRandomProfile() {
-      return fakeData[Math.floor(Math.random() * fakeData.length)];
-    }
-
-    function searchByNumber() {
-      const input = document.getElementById("number").value.trim();
-      let results = fakeData.filter(entry =>
-        entry.number.toLowerCase().includes(input.toLowerCase())
-      );
-      if (results.length === 0) {
-        results = [getRandomProfile()];
-      }
-      displayProfiles(results);
-    }
-
-    function searchByName() {
-      const input = document.getElementById("name").value.trim().toLowerCase();
-      let results = fakeData.filter(entry =>
-        entry.name.toLowerCase().includes(input)
-      );
-      if (results.length === 0) {
-        results = [getRandomProfile()];
-      }
-      displayProfiles(results);
-    }
-
-    function displayProfiles(results) {
-      const container = document.getElementById("profiles-list");
-      container.innerHTML = "";
-
-      results.forEach(data => {
-        const profileDiv = document.createElement("div");
-        profileDiv.className = "profile";
-
-        profileDiv.innerHTML = `
-          <img src="${data.photo}" alt="Фото ${data.name}" />
-          <div class="profile-info">
-            <h3>${data.name}</h3>
-            <p><strong>Номер:</strong> ${data.number}</p>
-            <p><strong>Город:</strong> ${data.city}</p>
-            <p><strong>Оператор:</strong> ${data.operator}</p>
-          </div>
-        `;
-        container.appendChild(profileDiv);
-      });
+    function showFakeResult() {
+      const randomName = names[Math.floor(Math.random() * names.length)];
+      document.getElementById('name').innerText = randomName;
+      document.getElementById('resultBox').style.display = 'block';
     }
   </script>
 </body>
