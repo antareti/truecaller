@@ -1,117 +1,135 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Smart Property Estimator</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TrueCaller Симулятор</title>
   <style>
     body {
-      font-family: Arial, sans-serif;
-      background: #f7f9fc;
       margin: 0;
-      padding: 0;
+      font-family: Arial, sans-serif;
+      background: #f4f6f9;
       color: #333;
     }
     header {
-      background: #003366;
+      background-color: #0066cc;
       color: white;
-      padding: 1em;
+      padding: 1rem;
       text-align: center;
     }
     main {
+      padding: 2rem;
       max-width: 600px;
-      margin: 2em auto;
-      padding: 1em;
+      margin: 0 auto;
       background: white;
       border-radius: 8px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
     }
-    label {
-      display: block;
-      margin-top: 1em;
+    h2 {
+      margin-top: 0;
     }
-    input, select {
+    .input-group {
+      margin-bottom: 1rem;
+    }
+    input {
       width: 100%;
-      padding: 0.5em;
-      margin-top: 0.25em;
+      padding: 0.5rem;
+      font-size: 1rem;
+      margin-top: 0.5rem;
       border: 1px solid #ccc;
       border-radius: 4px;
     }
     button {
-      margin-top: 1.5em;
-      padding: 0.75em;
       width: 100%;
-      background: #0055aa;
+      padding: 0.7rem;
+      font-size: 1rem;
+      background-color: #0066cc;
       color: white;
       border: none;
       border-radius: 4px;
-      font-size: 1em;
+      cursor: pointer;
     }
-    .result {
-      margin-top: 2em;
-      font-size: 1.2em;
-      font-weight: bold;
-      color: #0055aa;
+    .profile {
+      margin-top: 2rem;
+      padding: 1rem;
+      background: #f0f0f0;
+      border-radius: 8px;
     }
-    footer {
-      text-align: center;
-      margin-top: 2em;
-      padding: 1em;
-      font-size: 0.9em;
-      color: #666;
+    .profile img {
+      width: 80px;
+      border-radius: 50%;
     }
   </style>
 </head>
 <body>
   <header>
-    <h1>Smart Property Estimator</h1>
+    <h1>TrueCaller Симулятор</h1>
   </header>
   <main>
-    <form id="estimatorForm">
-      <label>City:<input type="text" id="city" required></label>
-      <label>District:<input type="text" id="district" required></label>
-      <label>Property Type:
-        <select id="type">
-          <option value="apartment">Apartment</option>
-          <option value="house">House</option>
-        </select>
-      </label>
-      <label>Size (m²):<input type="number" id="size" required></label>
-      <label>Floor:<input type="number" id="floor"></label>
-      <label>Year Built:<input type="number" id="year"></label>
-      <label>Condition:
-        <select id="condition">
-          <option value="renovated">Renovated</option>
-          <option value="not-renovated">Not Renovated</option>
-        </select>
-      </label>
-      <button type="submit">Estimate Value</button>
-    </form>
-    <div class="result" id="result"></div>
+    <h2>Поиск по номеру или имени</h2>
+    <div class="input-group">
+      <label for="number">Номер телефона:</label>
+      <input type="text" id="number" placeholder="Например, +79991234567">
+    </div>
+    <button onclick="searchByNumber()">Найти по номеру</button>
+
+    <div class="input-group">
+      <label for="name">Имя:</label>
+      <input type="text" id="name" placeholder="Например, Иван Иванов">
+    </div>
+    <button onclick="searchByName()">Найти по имени</button>
+
+    <div class="profile" id="profile" style="display: none">
+      <h3 id="p-name"></h3>
+      <img id="p-photo" src="" alt="Фото">
+      <p><strong>Город:</strong> <span id="p-city"></span></p>
+      <p><strong>Оператор:</strong> <span id="p-operator"></span></p>
+    </div>
   </main>
-  <footer>
-    &copy; 2025 Smart Property Estimator. All rights reserved.
-  </footer>
 
   <script>
-    document.getElementById('estimatorForm').addEventListener('submit', function (e) {
-      e.preventDefault();
-      const size = parseFloat(document.getElementById('size').value);
-      const type = document.getElementById('type').value;
-      const condition = document.getElementById('condition').value;
-      const year = parseInt(document.getElementById('year').value);
+    const fakeData = [
+      {
+        number: "+79991234567",
+        name: "Иван Иванов",
+        city: "Москва",
+        operator: "МТС",
+        photo: "https://randomuser.me/api/portraits/men/32.jpg"
+      },
+      {
+        number: "+79261234567",
+        name: "Ольга Смирнова",
+        city: "Санкт-Петербург",
+        operator: "Билайн",
+        photo: "https://randomuser.me/api/portraits/women/44.jpg"
+      }
+    ];
 
-      let basePricePerSqM = 1200;
-      if (type === 'house') basePricePerSqM = 1000;
-      if (condition === 'renovated') basePricePerSqM += 200;
-      if (year && year > 2015) basePricePerSqM += 100;
-      if (year && year < 1980) basePricePerSqM -= 150;
+    function searchByNumber() {
+      const number = document.getElementById('number').value;
+      const result = fakeData.find(entry => entry.number === number);
+      displayProfile(result);
+    }
 
-      const estimate = size * basePricePerSqM;
+    function searchByName() {
+      const name = document.getElementById('name').value;
+      const result = fakeData.find(entry => entry.name.toLowerCase() === name.toLowerCase());
+      displayProfile(result);
+    }
 
-      document.getElementById('result').textContent =
-        `Estimated Property Value: $${estimate.toLocaleString(undefined, {minimumFractionDigits: 0})}`;
-    });
+    function displayProfile(data) {
+      const profile = document.getElementById('profile');
+      if (!data) {
+        profile.innerHTML = '<p>Пользователь не найден.</p>';
+        profile.style.display = 'block';
+        return;
+      }
+      document.getElementById('p-name').textContent = data.name;
+      document.getElementById('p-photo').src = data.photo;
+      document.getElementById('p-city').textContent = data.city;
+      document.getElementById('p-operator').textContent = data.operator;
+      profile.style.display = 'block';
+    }
   </script>
 </body>
 </html>
