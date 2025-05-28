@@ -14,8 +14,11 @@
 
     body {
       font-family: 'Share Tech Mono', monospace;
-      background: url('4.gif') no-repeat center center fixed;
+      background: #000;
+      background-image: url('4.gif');
       background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
       color: #00ffe0;
       overflow: hidden;
       height: 100vh;
@@ -36,15 +39,9 @@
       pointer-events: none;
     }
 
-    canvas#waveCanvas {
-      z-index: -4;
-    }
-    canvas#rainCanvas {
-      z-index: -3;
-    }
-    canvas#cloudCanvas {
-      z-index: -2;
-    }
+    canvas#waveCanvas { z-index: -3; }
+    canvas#rainCanvas { z-index: -2; }
+    canvas#cloudCanvas { z-index: -1; }
 
     h1 {
       font-size: 3em;
@@ -87,8 +84,6 @@
       color: #00ffe0;
       background: rgba(0,0,0,0.4);
       border: 1px solid #00ffe0;
-      transition: 0.3s;
-      min-width: 180px;
     }
 
     input[type="tel"]:focus {
@@ -105,9 +100,7 @@
       background-color: #00ffe0;
       color: #000;
       cursor: pointer;
-      transition: all 0.3s ease;
       flex-shrink: 0;
-      min-width: 130px;
     }
 
     button:hover:not(:disabled) {
@@ -118,8 +111,26 @@
     button:disabled {
       cursor: not-allowed;
       background-color: #00665e;
-      box-shadow: none;
       color: #555;
+    }
+
+    .progress-container {
+      width: 300px;
+      height: 20px;
+      background: rgba(0,0,0,0.4);
+      border-radius: 10px;
+      overflow: hidden;
+      margin-top: 20px;
+      box-shadow: 0 0 10px #00ffe0 inset;
+      display: none;
+      z-index: 1;
+    }
+
+    .progress-bar {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #00ffe0, #00c9b7);
+      transition: width 0.3s ease;
     }
 
     .result {
@@ -150,57 +161,15 @@
       text-align: center;
       width: 100%;
     }
-
-    .progress-container {
-      width: 300px;
-      height: 20px;
-      background: rgba(0,0,0,0.4);
-      border-radius: 10px;
-      overflow: hidden;
-      margin-top: 20px;
-      box-shadow: 0 0 10px #00ffe0 inset;
-      display: none;
-      z-index: 1;
-    }
-
-    .progress-bar {
-      height: 100%;
-      width: 0%;
-      background: linear-gradient(90deg, #00ffe0, #00c9b7);
-      transition: width 0.3s ease;
-    }
-
-    @media (max-width: 400px) {
-      h1 {
-        font-size: 2em;
-      }
-
-      .form-container {
-        max-width: 100%;
-        padding: 15px;
-      }
-
-      .result, .progress-container {
-        width: 100%;
-        max-width: 350px;
-      }
-    }
   </style>
 </head>
 <body>
-
-  <!-- Звук -->
-  <audio autoplay loop>
-    <source src="3.mp3" type="audio/mpeg" />
-    Ваш браузер не поддерживает аудио.
-  </audio>
 
   <!-- Эффекты -->
   <canvas id="waveCanvas"></canvas>
   <canvas id="rainCanvas"></canvas>
   <canvas id="cloudCanvas"></canvas>
 
-  <!-- Контент -->
   <h1>TRUECALLER-X</h1>
 
   <form class="form-container" id="phoneForm" novalidate>
@@ -208,12 +177,11 @@
     <button type="submit" id="checkBtn" disabled>Пробить номер</button>
   </form>
 
-  <!-- Прогресс-бар -->
   <div class="progress-container" id="progressContainer">
     <div class="progress-bar" id="progressBar"></div>
   </div>
 
-  <div class="result" id="resultBox" role="region" aria-live="polite" aria-atomic="true">
+  <div class="result" id="resultBox">
     <p><strong>Имя:</strong> <span id="name">Иван Иванов</span></p>
     <p><strong>Оператор:</strong> <span id="operator">МТС</span></p>
     <p><strong>Регион:</strong> <span id="region">Москва</span></p>
@@ -222,8 +190,41 @@
 
   <div class="footer">2025 © Hackpack Tools | Telegram: @vipcam1977</div>
 
-  <!-- Здесь должен быть твой JS для эффектов -->
-  <script src="script.js"></script>
+  <audio autoplay loop>
+    <source src="3.mp3" type="audio/mpeg" />
+  </audio>
+
+  <!-- Скрипт -->
+  <script>
+    const phoneInput = document.getElementById("phone");
+    const checkBtn = document.getElementById("checkBtn");
+    const form = document.getElementById("phoneForm");
+    const resultBox = document.getElementById("resultBox");
+    const progressContainer = document.getElementById("progressContainer");
+    const progressBar = document.getElementById("progressBar");
+
+    phoneInput.addEventListener("input", () => {
+      checkBtn.disabled = phoneInput.value.trim().length < 10;
+    });
+
+    form.addEventListener("submit", (e) => {
+      e.preventDefault();
+      resultBox.classList.remove("show");
+      progressContainer.style.display = "block";
+      progressBar.style.width = "0%";
+
+      let progress = 0;
+      const interval = setInterval(() => {
+        progress += 5;
+        progressBar.style.width = progress + "%";
+
+        if (progress >= 100) {
+          clearInterval(interval);
+          resultBox.classList.add("show");
+        }
+      }, 100);
+    });
+  </script>
 
 </body>
 </html>
