@@ -2,14 +2,13 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Truecaller Хак</title>
   <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet" />
   <style>
+    /* Сброс стилей */
     * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
+      margin: 0; padding: 0; box-sizing: border-box;
     }
 
     body {
@@ -19,26 +18,101 @@
       overflow: hidden;
       height: 100vh;
       display: flex;
+      flex-direction: column;
       align-items: center;
       justify-content: center;
-      flex-direction: column;
-      position: relative;
       padding: 1em;
+      position: relative;
     }
 
-    video.bg-video {
+    /* Эффект дождя */
+    .rain {
+      pointer-events: none;
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      z-index: -5;
+      overflow: hidden;
+    }
+
+    .drop {
       position: absolute;
-      top: 0;
+      bottom: 100%;
+      width: 2px;
+      height: 15px;
+      background: linear-gradient(180deg, rgba(0,255,224,0.8), rgba(0,255,224,0));
+      animation-name: fall;
+      animation-timing-function: linear;
+      animation-iteration-count: infinite;
+    }
+
+    @keyframes fall {
+      to {
+        transform: translateY(110vh);
+        opacity: 0;
+      }
+    }
+
+    /* Облака */
+    .clouds {
+      position: fixed;
+      top: 10vh;
       left: 0;
       width: 100%;
-      height: 100%;
-      object-fit: cover;
-      z-index: -6;
+      height: 100px;
+      pointer-events: none;
+      z-index: -4;
+      overflow: visible;
     }
 
-    /* Контейнер для глаз */
-    #eyesContainer {
+    .cloud {
       position: absolute;
+      background: rgba(0, 255, 224, 0.15);
+      border-radius: 50%;
+      filter: drop-shadow(0 0 10px #00ffe0);
+      animation: cloudMove linear infinite;
+    }
+
+    .cloud1 {
+      width: 150px;
+      height: 80px;
+      top: 10px;
+      left: -160px;
+      animation-duration: 80s;
+    }
+
+    .cloud2 {
+      width: 120px;
+      height: 70px;
+      top: 40px;
+      left: -140px;
+      animation-duration: 100s;
+    }
+
+    .cloud3 {
+      width: 180px;
+      height: 90px;
+      top: 0;
+      left: -180px;
+      animation-duration: 120s;
+    }
+
+    @keyframes cloudMove {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(110vw); }
+    }
+
+    /* Видео фона */
+    video.bg-video {
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      object-fit: cover;
+      z-index: -6;
+      pointer-events: none;
+    }
+
+    /* Глаза женщины */
+    #eyesContainer {
+      position: fixed;
       top: 20px;
       right: 20px;
       width: 220px;
@@ -46,7 +120,7 @@
       display: flex;
       gap: 20px;
       z-index: 10;
-      filter: drop-shadow(0 0 5px #00ffe0);
+      filter: drop-shadow(0 0 8px #00ffe0);
       user-select: none;
       cursor: default;
     }
@@ -55,21 +129,46 @@
       position: relative;
       width: 100px;
       height: 100px;
+      background: #001e26;
+      border: 3px solid #00ffe0;
+      border-radius: 50% / 60%;
+      box-shadow:
+        inset 0 10px 15px rgba(0, 255, 224, 0.3),
+        0 0 15px #00ffe0;
+      overflow: hidden;
     }
 
     svg {
       width: 100%;
       height: 100%;
+      pointer-events: none;
+    }
+
+    .iris {
+      transition: cx 0.1s ease, cy 0.1s ease;
+      fill: #00ffe0;
+      filter: drop-shadow(0 0 5px #00ffe0);
+    }
+
+    .pupil {
+      fill: #003333;
+      transition: cx 0.1s ease, cy 0.1s ease;
+    }
+
+    /* Блик глаза */
+    .eye circle.highlight {
+      fill: rgba(255, 255, 255, 0.7);
+      filter: blur(1px);
     }
 
     /* Заголовок */
     h1 {
       font-size: 3em;
-      text-shadow: 0 0 10px #00ffe0;
-      animation: glitch 1s infinite;
-      z-index: 1;
+      text-shadow: 0 0 12px #00ffe0;
+      animation: glitch 1.2s infinite;
       margin-bottom: 0.5em;
       text-align: center;
+      z-index: 1;
     }
 
     @keyframes glitch {
@@ -78,9 +177,10 @@
       100% { text-shadow: 2px 2px #ff00c8; }
     }
 
+    /* Форма */
     .form-container {
       margin-top: 1em;
-      background: rgba(0, 0, 0, 0.6);
+      background: rgba(0, 0, 0, 0.65);
       padding: 20px;
       border-radius: 10px;
       box-shadow: 0 0 20px #00ffe0;
@@ -139,10 +239,11 @@
       color: #555;
     }
 
+    /* Результат */
     .result {
       margin-top: 20px;
       padding: 15px;
-      background: rgba(0, 0, 0, 0.5);
+      background: rgba(0, 0, 0, 0.55);
       border: 1px solid #00ffe0;
       border-radius: 8px;
       box-shadow: 0 0 10px #00ffe0;
@@ -152,6 +253,7 @@
       transition: opacity 0.5s ease;
       pointer-events: none;
       user-select: none;
+      font-size: 1.1em;
     }
 
     .result.show {
@@ -159,14 +261,16 @@
       pointer-events: auto;
     }
 
+    /* Футер */
     .footer {
-      position: absolute;
+      position: fixed;
       bottom: 10px;
       font-size: 0.8em;
       color: #bbb;
       z-index: 1;
       text-align: center;
       width: 100%;
+      user-select: none;
     }
 
     /* Прогресс-бар */
@@ -185,184 +289,188 @@
 
     .progress-bar {
       height: 100%;
-      width: 0%;
-      background: linear-gradient(90deg, #00ffe0, #00c9b7);
-      transition: width 0.3s ease;
-    }
-
-    /* Адаптив */
-    @media (max-width: 400px) {
-      h1 {
-        font-size: 2em;
-      }
-
-      .form-container {
-        max-width: 100%;
-        padding: 15px;
-      }
-
-      .result, .progress-container {
-        max-width: 100%;
-      }
+      width: 0;
+      background: #00ffe0;
+      transition: width 0.2s ease;
     }
   </style>
 </head>
 <body>
-  <!-- Фоновое видео -->
-  <video class="bg-video" autoplay loop muted>
-    <source src="smoke.webm" type="video/webm" />
-    Ваш браузер не поддерживает видео.
-  </video>
 
-  <!-- Фоновая музыка -->
-  <audio autoplay loop>
-    <source src="3.mp3" type="audio/mpeg" />
-    Ваш браузер не поддерживает аудио.
-  </audio>
+  <!-- Эффект дождя -->
+  <div class="rain"></div>
 
-  <!-- Глаза -->
-  <div id="eyesContainer" aria-label="Анимированные глаза" role="img">
-    <div class="eye" aria-label="Глаз">
-      <svg viewBox="0 0 64 64" >
-        <ellipse cx="32" cy="32" rx="30" ry="18" fill="#001e26" stroke="#00ffe0" stroke-width="2" />
-        <circle class="iris" cx="32" cy="32" r="12" fill="#00ffe0" />
-        <circle class="pupil" cx="32" cy="32" r="6" fill="#003333" />
-        <circle cx="27" cy="27" r="3" fill="rgba(255,255,255,0.6)" />
+  <!-- Облака -->
+  <div class="clouds">
+    <div class="cloud cloud1"></div>
+    <div class="cloud cloud2"></div>
+    <div class="cloud cloud3"></div>
+  </div>
+
+  <!-- Глаза женщины -->
+  <div id="eyesContainer">
+    <div class="eye" id="eyeLeft">
+      <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" >
+        <ellipse cx="50" cy="50" rx="45" ry="40" fill="#001e26"/>
+        <circle class="iris" cx="50" cy="50" r="20"/>
+        <circle class="pupil" cx="50" cy="50" r="10"/>
+        <circle class="highlight" cx="60" cy="40" r="6"/>
       </svg>
     </div>
-    <div class="eye" aria-label="Глаз">
-      <svg viewBox="0 0 64 64" >
-        <ellipse cx="32" cy="32" rx="30" ry="18" fill="#001e26" stroke="#00ffe0" stroke-width="2" />
-        <circle class="iris" cx="32" cy="32" r="12" fill="#00ffe0" />
-        <circle class="pupil" cx="32" cy="32" r="6" fill="#003333" />
-        <circle cx="27" cy="27" r="3" fill="rgba(255,255,255,0.6)" />
+    <div class="eye" id="eyeRight">
+      <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" >
+        <ellipse cx="50" cy="50" rx="45" ry="40" fill="#001e26"/>
+        <circle class="iris" cx="50" cy="50" r="20"/>
+        <circle class="pupil" cx="50" cy="50" r="10"/>
+        <circle class="highlight" cx="60" cy="40" r="6"/>
       </svg>
     </div>
   </div>
 
-  <!-- Заголовок -->
-  <h1>TRUECALLER-X</h1>
+  <h1>Truecaller Хак</h1>
 
-  <!-- Форма -->
-  <form class="form-container" id="phoneForm" novalidate>
-    <input type="tel" id="phone" name="phone" placeholder="+7 (___) ___-__-__" maxlength="18" autocomplete="off" />
-    <button type="submit" id="checkBtn" disabled>Пробить номер</button>
-  </form>
+  <div class="form-container">
+    <input type="tel" id="phoneInput" placeholder="Введите номер телефона" pattern="[0-9+]{6,15}" maxlength="15" />
+    <button id="startButton" disabled>Начать</button>
+  </div>
 
-  <!-- Прогресс-бар -->
   <div class="progress-container" id="progressContainer">
     <div class="progress-bar" id="progressBar"></div>
   </div>
 
-  <!-- Результат -->
-  <div class="result" id="result" aria-live="polite"></div>
+  <div class="result" id="result"></div>
 
-  <!-- Футер -->
-  <div class="footer">By Harash | <a href="https://vk.com/harash" style="color:#00ffe0;" target="_blank" rel="noopener noreferrer">VK</a></div>
+  <div class="footer">© 2025 Professor Synapse. Все права защищены.</div>
 
   <script>
-    const eyes = document.querySelectorAll('.eye');
-    const pupils = [];
+    // Генерация капель дождя
+    const rainContainer = document.querySelector('.rain');
 
-    eyes.forEach(eye => {
-      const pupil = eye.querySelector('.pupil');
-      pupils.push(pupil);
-    });
+    function createDrop() {
+      const drop = document.createElement('div');
+      drop.classList.add('drop');
+      drop.style.left = Math.random() * 100 + 'vw';
+      drop.style.animationDuration = (0.5 + Math.random() * 0.8) + 's';
+      drop.style.animationDelay = (Math.random() * 5) + 's';
+      drop.style.height = (10 + Math.random() * 15) + 'px';
+      drop.style.opacity = 0.5 + Math.random() * 0.5;
+      rainContainer.appendChild(drop);
 
-    // Максимальное смещение зрачка внутри глаза (в px)
-    const maxOffset = 10;
-
-    window.addEventListener('mousemove', e => {
-      eyes.forEach((eye, i) => {
-        const rect = eye.getBoundingClientRect();
-        const centerX = rect.left + rect.width / 2;
-        const centerY = rect.top + rect.height / 2;
-
-        const dx = e.clientX - centerX;
-        const dy = e.clientY - centerY;
-
-        // Вычисляем угол и расстояние
-        const angle = Math.atan2(dy, dx);
-        const dist = Math.min(maxOffset, Math.hypot(dx, dy));
-
-        // Считаем смещение для зрачка
-        const x = Math.cos(angle) * dist;
-        const y = Math.sin(angle) * dist;
-
-        pupils[i].setAttribute('cx', 32 + x);
-        pupils[i].setAttribute('cy', 32 + y);
+      // Удаляем каплю после анимации
+      drop.addEventListener('animationend', () => {
+        drop.remove();
       });
-    });
+    }
 
-    // Форма и валидация
-    const phoneInput = document.getElementById('phone');
-    const checkBtn = document.getElementById('checkBtn');
-    const form = document.getElementById('phoneForm');
+    // Создаем много капель с интервалом
+    setInterval(() => {
+      for(let i=0; i<5; i++) {
+        createDrop();
+      }
+    }, 200);
+
+    // Обработка ввода номера телефона
+    const phoneInput = document.getElementById('phoneInput');
+    const startButton = document.getElementById('startButton');
     const resultDiv = document.getElementById('result');
     const progressContainer = document.getElementById('progressContainer');
     const progressBar = document.getElementById('progressBar');
 
-    // Простая маска для российского номера +7 (xxx) xxx-xx-xx
+    // Проверка корректности номера (простая)
     phoneInput.addEventListener('input', () => {
-      let val = phoneInput.value;
-
-      // Форматируем ввод
-      val = val.replace(/\D/g, ''); // только цифры
-
-      if (val.startsWith('8')) {
-        val = '7' + val.slice(1);
-      }
-      if (!val.startsWith('7')) {
-        val = '7' + val;
-      }
-      if (val.length > 11) val = val.slice(0, 11);
-
-      // Форматируем под +7 (xxx) xxx-xx-xx
-      let formatted = '+7 ';
-      if (val.length > 1) formatted += '(' + val.slice(1,4);
-      if (val.length >= 4) formatted += ') ' + val.slice(4,7);
-      if (val.length >= 7) formatted += '-' + val.slice(7,9);
-      if (val.length >= 9) formatted += '-' + val.slice(9,11);
-
-      phoneInput.value = formatted;
-
-      // Проверяем валидность по длине (11 цифр включая 7)
-      if (val.length === 11) {
-        checkBtn.disabled = false;
-      } else {
-        checkBtn.disabled = true;
-      }
+      const val = phoneInput.value.trim();
+      // Валидация: от 6 до 15 цифр, плюс может быть один в начале
+      const valid = /^(\+)?\d{6,15}$/.test(val);
+      startButton.disabled = !valid;
     });
 
-    form.addEventListener('submit', e => {
-      e.preventDefault();
+    // Массив для имитации результата — имена и фамилии
+    const fakeResults = [
+      {first: 'Александр', last: 'Иванов'},
+      {first: 'Мария', last: 'Петрова'},
+      {first: 'Дмитрий', last: 'Смирнов'},
+      {first: 'Елена', last: 'Кузнецова'},
+      {first: 'Игорь', last: 'Новиков'},
+      {first: 'Ольга', last: 'Соколова'},
+      {first: 'Сергей', last: 'Лебедев'},
+      {first: 'Наталья', last: 'Орлова'},
+      {first: 'Владимир', last: 'Морозов'},
+      {first: 'Татьяна', last: 'Федорова'}
+    ];
 
-      const phone = phoneInput.value;
-      if (checkBtn.disabled) return;
-
+    // Функция эмуляции процесса "хакерства"
+    function startHack() {
+      startButton.disabled = true;
+      phoneInput.disabled = true;
       resultDiv.classList.remove('show');
-      resultDiv.textContent = '';
-      progressBar.style.width = '0%';
       progressContainer.style.display = 'block';
+      progressBar.style.width = '0%';
 
-      // Имитация загрузки
       let progress = 0;
+
       const interval = setInterval(() => {
-        progress += 10;
+        progress += Math.random() * 10;
+        if(progress > 100) progress = 100;
         progressBar.style.width = progress + '%';
 
-        if (progress >= 100) {
+        if(progress >= 100) {
           clearInterval(interval);
           progressContainer.style.display = 'none';
 
-          // Здесь можно реализовать реальный запрос
-          // Для примера просто выводим фиктивный результат
-          const fakeResult = `Результат проверки номера: <b>${phone}</b> — Успешно найден!`;
-          resultDiv.innerHTML = fakeResult;
+          // Выбор случайного результата
+          const res = fakeResults[Math.floor(Math.random() * fakeResults.length)];
+          resultDiv.textContent = `Результат: ${res.first} ${res.last}`;
           resultDiv.classList.add('show');
+          phoneInput.disabled = false;
+          startButton.disabled = false;
         }
       }, 300);
+    }
+
+    startButton.addEventListener('click', () => {
+      startHack();
     });
+
+    // Эффект глаз, следящих за курсором
+    const eyes = document.querySelectorAll('.eye svg');
+
+    window.addEventListener('mousemove', e => {
+      eyes.forEach(svg => {
+        const rect = svg.getBoundingClientRect();
+        const cx = rect.left + rect.width / 2;
+        const cy = rect.top + rect.height / 2;
+
+        const dx = e.clientX - cx;
+        const dy = e.clientY - cy;
+
+        // Максимальное смещение радужки
+        const maxDist = 15;
+
+        // Вычисляем расстояние и ограничиваем смещение
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        let offsetX = dx;
+        let offsetY = dy;
+        if (dist > maxDist) {
+          offsetX = dx / dist * maxDist;
+          offsetY = dy / dist * maxDist;
+        }
+
+        // Двигаем радужку и зрачок
+        const iris = svg.querySelector('.iris');
+        const pupil = svg.querySelector('.pupil');
+
+        const irisCX = 50 + offsetX;
+        const irisCY = 50 + offsetY;
+
+        iris.setAttribute('cx', irisCX);
+        iris.setAttribute('cy', irisCY);
+
+        pupil.setAttribute('cx', irisCX);
+        pupil.setAttribute('cy', irisCY);
+      });
+    });
+
   </script>
+
 </body>
 </html>
