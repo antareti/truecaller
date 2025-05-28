@@ -1,60 +1,52 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Truecaller Хак</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
   <style>
-    html, body {
+    * {
       margin: 0;
       padding: 0;
-      font-family: 'Share Tech Mono', monospace;
-      overflow: hidden;
-      height: 100%;
-      color: #00ffe0;
-      background: #000;
-    }
-
-    canvas#waveCanvas, canvas#rainCanvas {
-      position: fixed;
-      top: 0;
-      left: 0;
-      z-index: 0;
-    }
-
-    canvas#rainCanvas {
-      z-index: 3;
-      pointer-events: none;
-    }
-
-    video.smoke-video {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
-      object-fit: cover;
-      opacity: 0.25;
-      z-index: 1;
-      pointer-events: none;
+      box-sizing: border-box;
     }
 
     body {
+      font-family: 'Share Tech Mono', monospace;
+      background: #000;
+      color: #00ffe0;
+      overflow: hidden;
+      height: 100vh;
       display: flex;
-      flex-direction: column;
-      justify-content: center;
       align-items: center;
-      z-index: 2;
+      justify-content: center;
+      flex-direction: column;
       position: relative;
+    }
+
+    video.bg-video {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: -3;
+    }
+
+    canvas#waveCanvas, canvas#rainCanvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: -2;
     }
 
     h1 {
       font-size: 3em;
       text-shadow: 0 0 10px #00ffe0;
       animation: glitch 1s infinite;
-      z-index: 4;
-      position: relative;
+      z-index: 1;
     }
 
     @keyframes glitch {
@@ -64,12 +56,12 @@
     }
 
     .form-container {
-      background: rgba(0, 0, 0, 0.7);
+      margin-top: 2em;
+      background: rgba(0, 0, 0, 0.6);
       padding: 20px;
       border-radius: 10px;
-      margin-top: 20px;
       box-shadow: 0 0 20px #00ffe0;
-      z-index: 4;
+      z-index: 1;
     }
 
     input[type="tel"] {
@@ -105,7 +97,7 @@
       border-radius: 8px;
       box-shadow: 0 0 10px #00ffe0;
       display: none;
-      z-index: 4;
+      z-index: 1;
     }
 
     .footer {
@@ -113,31 +105,33 @@
       bottom: 10px;
       font-size: 0.8em;
       color: #bbb;
-      z-index: 4;
+      z-index: 1;
     }
   </style>
 </head>
 <body>
-
-  <!-- Видеодым -->
-  <video autoplay muted loop playsinline class="smoke-video">
-    <source src="https://files.catbox.moe/tl6kld.webm" type="video/webm">
+  <!-- Фоновое видео -->
+  <video class="bg-video" autoplay loop muted>
+    <source src="smoke.webm" type="video/webm" />
+    Ваш браузер не поддерживает видео.
   </video>
 
-  <!-- Эффект волн -->
+  <!-- Фоновая музыка -->
+  <audio autoplay loop>
+    <source src="3.mp3" type="audio/mpeg" />
+    Ваш браузер не поддерживает аудио.
+  </audio>
+
+  <!-- Эффект волны -->
   <canvas id="waveCanvas"></canvas>
 
   <!-- Эффект дождя -->
   <canvas id="rainCanvas"></canvas>
 
-  <!-- Аудио -->
-  <audio autoplay loop>
-    <source src="3.mp3" type="audio/mpeg">
-  </audio>
-
+  <!-- Контент -->
   <h1>TRUECALLER-X</h1>
   <div class="form-container">
-    <input type="tel" id="phone" placeholder="+7 (___) ___-__-__" maxlength="18">
+    <input type="tel" id="phone" placeholder="+7 (___) ___-__-__" maxlength="18" />
     <button onclick="showFakeResult()">Пробить номер</button>
   </div>
   <div class="result" id="resultBox">
@@ -149,7 +143,13 @@
   <div class="footer">2025 © Hackpack Tools | Telegram: @vipcam1977</div>
 
   <script>
-    const names = ["Иван Иванов", "Сергей Смирнов", "Алексей Кузнецов", "Дмитрий Попов", "Николай Лебедев", "Владимир Соколов", "Антон Орлов", "Павел Тарасов", "Юрий Фёдоров", "Игорь Васильев", "Евгений Морозов"];
+    // Псевдослучайные имена
+    const names = [
+      "Иван Иванов", "Сергей Смирнов", "Алексей Кузнецов",
+      "Дмитрий Попов", "Николай Лебедев", "Владимир Соколов",
+      "Антон Орлов", "Павел Тарасов", "Юрий Фёдоров",
+      "Игорь Васильев", "Евгений Морозов"
+    ];
 
     function showFakeResult() {
       const randomName = names[Math.floor(Math.random() * names.length)];
@@ -157,77 +157,58 @@
       document.getElementById('resultBox').style.display = 'block';
     }
 
-    // ВОЛНЫ
+    // Волна
     const waveCanvas = document.getElementById('waveCanvas');
-    const waveCtx = waveCanvas.getContext('2d');
-
-    function resizeCanvas() {
-      waveCanvas.width = window.innerWidth;
-      waveCanvas.height = window.innerHeight;
-      rainCanvas.width = window.innerWidth;
-      rainCanvas.height = window.innerHeight;
-    }
-
-    resizeCanvas();
-    window.addEventListener('resize', resizeCanvas);
-
-    let t = 0;
-    function drawWaves() {
-      waveCtx.clearRect(0, 0, waveCanvas.width, waveCanvas.height);
-      for (let i = 0; i < 5; i++) {
-        waveCtx.beginPath();
-        for (let x = 0; x < waveCanvas.width; x++) {
-          let y = waveCanvas.height / 2 +
-                  Math.sin(x * 0.01 + t + i) * 20 +
-                  Math.sin(x * 0.02 + t * 0.5) * 10;
-          if (x === 0) waveCtx.moveTo(x, y);
-          else waveCtx.lineTo(x, y);
-        }
-        waveCtx.strokeStyle = `rgba(0,255,255,${0.05 + i * 0.02})`;
-        waveCtx.lineWidth = 1 + i * 0.5;
-        waveCtx.stroke();
+    const wCtx = waveCanvas.getContext('2d');
+    waveCanvas.width = window.innerWidth;
+    waveCanvas.height = window.innerHeight;
+    function drawWave(time) {
+      wCtx.clearRect(0, 0, waveCanvas.width, waveCanvas.height);
+      wCtx.beginPath();
+      for (let x = 0; x < waveCanvas.width; x++) {
+        const y = Math.sin(x * 0.01 + time * 0.002) * 20 + waveCanvas.height / 2;
+        wCtx.lineTo(x, y);
       }
-      t += 0.02;
-      requestAnimationFrame(drawWaves);
+      wCtx.strokeStyle = '#00ffe044';
+      wCtx.lineWidth = 1;
+      wCtx.stroke();
+      requestAnimationFrame(drawWave);
     }
+    drawWave(0);
 
-    drawWaves();
-
-    // ДОЖДЬ
+    // Дождь
     const rainCanvas = document.getElementById('rainCanvas');
-    const rainCtx = rainCanvas.getContext('2d');
-    const drops = [];
-
-    for (let i = 0; i < 200; i++) {
+    const rCtx = rainCanvas.getContext('2d');
+    rainCanvas.width = window.innerWidth;
+    rainCanvas.height = window.innerHeight;
+    let drops = [];
+    for (let i = 0; i < 400; i++) {
       drops.push({
-        x: Math.random() * window.innerWidth,
-        y: Math.random() * window.innerHeight,
+        x: Math.random() * rainCanvas.width,
+        y: Math.random() * rainCanvas.height,
         length: Math.random() * 20 + 10,
-        speed: Math.random() * 4 + 2
+        speed: Math.random() * 5 + 4
       });
     }
 
     function drawRain() {
-      rainCtx.clearRect(0, 0, rainCanvas.width, rainCanvas.height);
-      rainCtx.strokeStyle = 'rgba(0,255,255,0.2)';
-      rainCtx.lineWidth = 1;
+      rCtx.clearRect(0, 0, rainCanvas.width, rainCanvas.height);
+      rCtx.strokeStyle = '#00ffe066';
+      rCtx.lineWidth = 1;
       for (let drop of drops) {
-        rainCtx.beginPath();
-        rainCtx.moveTo(drop.x, drop.y);
-        rainCtx.lineTo(drop.x, drop.y + drop.length);
-        rainCtx.stroke();
-
+        rCtx.beginPath();
+        rCtx.moveTo(drop.x, drop.y);
+        rCtx.lineTo(drop.x, drop.y + drop.length);
+        rCtx.stroke();
         drop.y += drop.speed;
-        if (drop.y > window.innerHeight) {
+        if (drop.y > rainCanvas.height) {
           drop.y = -drop.length;
-          drop.x = Math.random() * window.innerWidth;
+          drop.x = Math.random() * rainCanvas.width;
         }
       }
       requestAnimationFrame(drawRain);
     }
-
     drawRain();
   </script>
-
 </body>
 </html>
