@@ -14,7 +14,7 @@
 
     body {
       font-family: 'Share Tech Mono', monospace;
-      background: #000;
+      background: radial-gradient(circle at center, #0f2027, #203a43, #2c5364);
       color: #00ffe0;
       overflow: hidden;
       height: 100vh;
@@ -23,12 +23,6 @@
       justify-content: center;
       flex-direction: column;
       position: relative;
-      transition: background-color 0.5s ease, color 0.5s ease;
-    }
-
-    body.light {
-      background: #f0f0f0;
-      color: #005f5f;
     }
 
     video.bg-video {
@@ -38,34 +32,23 @@
       width: 100%;
       height: 100%;
       object-fit: cover;
-      z-index: -4;
-      filter: brightness(0.3);
-      transition: filter 0.5s ease;
-    }
-
-    body.light video.bg-video {
-      filter: brightness(0.7);
+      z-index: -3;
     }
 
     canvas#waveCanvas, canvas#rainCanvas {
       position: absolute;
       top: 0;
       left: 0;
-      z-index: -3;
-      pointer-events: none;
-    }
-
-    body.light canvas#waveCanvas, 
-    body.light canvas#rainCanvas {
-      filter: invert(1);
+      z-index: -2;
+      width: 100%;
+      height: 100%;
     }
 
     h1 {
       font-size: 3em;
       text-shadow: 0 0 10px #00ffe0;
       animation: glitch 1s infinite;
-      z-index: 2;
-      user-select: none;
+      z-index: 1;
     }
 
     @keyframes glitch {
@@ -80,19 +63,7 @@
       padding: 20px;
       border-radius: 10px;
       box-shadow: 0 0 20px #00ffe0;
-      z-index: 2;
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-      max-width: 350px;
-      transition: background-color 0.5s ease, box-shadow 0.5s ease;
-    }
-
-    body.light .form-container {
-      background: rgba(255, 255, 255, 0.8);
-      box-shadow: 0 0 20px #005f5f;
+      z-index: 1;
     }
 
     input[type="tel"] {
@@ -100,27 +71,14 @@
       font-size: 1.2em;
       border: none;
       border-radius: 5px;
-      width: 100%;
-      max-width: 250px;
-      margin-right: 0;
-      box-shadow: inset 0 0 5px #00ffe0;
-      background: #111;
+      width: 250px;
+      margin-right: 10px;
+      background-color: #0f2027;
       color: #00ffe0;
-      transition: background-color 0.3s ease, color 0.3s ease;
-    }
-
-    body.light input[type="tel"] {
-      background: #e0f7f7;
-      color: #005f5f;
-      box-shadow: inset 0 0 5px #005f5f;
     }
 
     input[type="tel"]::placeholder {
       color: #00ffe0aa;
-    }
-
-    body.light input[type="tel"]::placeholder {
-      color: #005f5faa;
     }
 
     button {
@@ -132,33 +90,11 @@
       color: #000;
       cursor: pointer;
       transition: all 0.3s ease;
-      flex-shrink: 0;
-      user-select: none;
-      box-shadow: 0 0 10px #00ffe0;
-      position: relative;
-      overflow: hidden;
     }
 
     button:hover {
       background-color: #00c9b7;
-      box-shadow: 0 0 20px #00ffe0;
-      animation: pulse 1.5s infinite;
-    }
-
-    @keyframes pulse {
-      0%, 100% { box-shadow: 0 0 20px #00ffe0; }
-      50% { box-shadow: 0 0 40px #00ffc9; }
-    }
-
-    body.light button {
-      background-color: #005f5f;
-      color: #e0f7f7;
-      box-shadow: 0 0 10px #005f5f;
-    }
-
-    body.light button:hover {
-      background-color: #003f3f;
-      box-shadow: 0 0 20px #005f5f;
+      box-shadow: 0 0 10px #00ffe0;
     }
 
     .result {
@@ -169,54 +105,7 @@
       border-radius: 8px;
       box-shadow: 0 0 10px #00ffe0;
       display: none;
-      z-index: 2;
-      max-width: 320px;
-      width: 90%;
-      user-select: text;
-      position: relative;
-      font-size: 1.1em;
-      transition: background-color 0.5s ease, border-color 0.5s ease;
-    }
-
-    body.light .result {
-      background: rgba(255, 255, 255, 0.8);
-      border-color: #005f5f;
-      color: #005f5f;
-      box-shadow: 0 0 10px #005f5f;
-    }
-
-    .copy-btn {
-      position: absolute;
-      top: 10px;
-      right: 10px;
-      background: #00ffe0;
-      color: #000;
-      border: none;
-      border-radius: 5px;
-      padding: 5px 10px;
-      font-size: 0.9em;
-      cursor: pointer;
-      transition: background-color 0.3s ease;
-      user-select: none;
-    }
-
-    .copy-btn:hover {
-      background-color: #00c9b7;
-    }
-
-    .loading {
-      margin-top: 20px;
-      font-size: 1.1em;
-      color: #00ffe0;
-      text-shadow: 0 0 10px #00ffe0;
-      z-index: 2;
-      user-select: none;
-      animation: blink 1s infinite;
-    }
-
-    @keyframes blink {
-      0%, 100% {opacity: 1;}
-      50% {opacity: 0.3;}
+      z-index: 1;
     }
 
     .footer {
@@ -224,91 +113,19 @@
       bottom: 10px;
       font-size: 0.8em;
       color: #bbb;
-      z-index: 2;
-      user-select: none;
-      transition: color 0.5s ease;
-    }
-
-    body.light .footer {
-      color: #555;
-    }
-
-    /* Анимация печатающегося текста */
-    @keyframes typing {
-      from { width: 0 }
-      to { width: 100% }
-    }
-    @keyframes blinkCursor {
-      0%, 100% { border-color: transparent }
-      50% { border-color: #00ffe0 }
-    }
-    .typing-text {
-      display: inline-block;
-      white-space: nowrap;
-      overflow: hidden;
-      border-right: 3px solid #00ffe0;
-      animation: typing 1.5s steps(30, end), blinkCursor 0.7s step-end infinite;
-      max-width: 100%;
-    }
-
-    /* Переключатель темы */
-    .theme-toggle {
-      position: fixed;
-      top: 10px;
-      right: 10px;
-      background: #00ffe0;
-      color: #000;
-      border: none;
-      border-radius: 20px;
-      padding: 8px 15px;
-      cursor: pointer;
-      box-shadow: 0 0 10px #00ffe0;
-      z-index: 10;
-      user-select: none;
-      transition: background-color 0.3s ease;
-    }
-
-    .theme-toggle:hover {
-      background-color: #00c9b7;
-    }
-
-    /* Мобильная адаптивность */
-    @media (max-width: 480px) {
-      h1 {
-        font-size: 2em;
-        padding: 0 10px;
-        text-align: center;
-      }
-      .form-container {
-        max-width: 90vw;
-        flex-direction: column;
-      }
-      input[type="tel"] {
-        max-width: 100%;
-        margin-bottom: 10px;
-      }
-      button {
-        width: 100%;
-        max-width: 320px;
-      }
-      .result {
-        max-width: 90vw;
-      }
+      z-index: 1;
     }
   </style>
 </head>
 <body>
-  <!-- Кнопка переключения темы -->
-  <button class="theme-toggle" aria-label="Переключить тему">Светлая тема</button>
-
   <!-- Фоновое видео -->
-  <video class="bg-video" autoplay loop muted playsinline>
+  <video class="bg-video" autoplay loop muted>
     <source src="smoke.webm" type="video/webm" />
     Ваш браузер не поддерживает видео.
   </video>
 
   <!-- Фоновая музыка -->
-  <audio id="bg-music" autoplay loop>
+  <audio autoplay loop>
     <source src="3.mp3" type="audio/mpeg" />
     Ваш браузер не поддерживает аудио.
   </audio>
@@ -322,196 +139,94 @@
   <!-- Контент -->
   <h1>TRUECALLER-X</h1>
   <div class="form-container">
-    <input type="tel" id="phone" placeholder="+7 (___) ___-__-__" maxlength="18" aria-label="Номер телефона"/>
-    <button id="checkBtn" aria-label="Пробить номер">Пробить номер</button>
+    <input type="tel" id="phone" placeholder="+7 (___) ___-__-__" maxlength="18" />
+    <button onclick="showFakeResult()">Пробить номер</button>
   </div>
-
-  <div class="loading" id="loading" style="display:none;">Идёт обработка...</div>
-
-  <div class="result" id="result" tabindex="0" aria-live="polite">
-    <button class="copy-btn" id="copyBtn" aria-label="Скопировать результат">Копировать</button>
-    <div id="resultText"></div>
+  <div class="result" id="resultBox">
+    <p><strong>Имя:</strong> <span id="name">Иван Иванов</span></p>
+    <p><strong>Оператор:</strong> МТС</p>
+    <p><strong>Регион:</strong> Москва</p>
+    <p><strong>Статус:</strong> Проверен ✅</p>
   </div>
-
-  <div class="footer">
-    © 2025 Professor Synapse. Все права защищены.
-  </div>
+  <div class="footer">2025 © Hackpack Tools | Telegram: @vipcam1977</div>
 
   <script>
-    // Полифилл для String.prototype.replaceAll (если нужно)
-    if (!String.prototype.replaceAll) {
-      String.prototype.replaceAll = function(str, newStr){
-        return this.split(str).join(newStr);
-      };
+    // Список рандомных имён
+    const names = [
+      "Иван Иванов", "Сергей Смирнов", "Алексей Кузнецов",
+      "Дмитрий Попов", "Николай Лебедев", "Владимир Соколов",
+      "Антон Орлов", "Павел Тарасов", "Юрий Фёдоров",
+      "Игорь Васильев", "Евгений Морозов"
+    ];
+
+    function showFakeResult() {
+      const randomName = names[Math.floor(Math.random() * names.length)];
+      document.getElementById('name').innerText = randomName;
+      document.getElementById('resultBox').style.display = 'block';
     }
 
-    // Элементы
-    const phoneInput = document.getElementById('phone');
-    const checkBtn = document.getElementById('checkBtn');
-    const loadingDiv = document.getElementById('loading');
-    const resultDiv = document.getElementById('result');
-    const resultText = document.getElementById('resultText');
-    const copyBtn = document.getElementById('copyBtn');
-    const themeToggle = document.querySelector('.theme-toggle');
-    const body = document.body;
-
-    // Маска ввода телефона
-    phoneInput.addEventListener('input', e => {
-      let val = phoneInput.value.replace(/\D/g, '');
-      if (!val.startsWith('7')) {
-        val = '7' + val; // Добавляем 7 если не стоит
-      }
-      let formatted = '+7 ';
-      if (val.length > 1) formatted += '(' + val.substring(1,4);
-      if (val.length >= 4) formatted += ') ' + val.substring(4,7);
-      if (val.length >= 7) formatted += '-' + val.substring(7,9);
-      if (val.length >= 9) formatted += '-' + val.substring(9,11);
-      phoneInput.value = formatted;
-    });
-
-    // Клик по кнопке копирования
-    copyBtn.addEventListener('click', () => {
-      if (resultText.textContent.trim().length === 0) return;
-      navigator.clipboard.writeText(resultText.textContent).then(() => {
-        copyBtn.textContent = 'Скопировано!';
-        setTimeout(() => { copyBtn.textContent = 'Копировать'; }, 2000);
-      });
-    });
-
-    // Переключение темы
-    themeToggle.addEventListener('click', () => {
-      body.classList.toggle('light');
-      if(body.classList.contains('light')) {
-        themeToggle.textContent = 'Тёмная тема';
-      } else {
-        themeToggle.textContent = 'Светлая тема';
-      }
-    });
-
-    // Обработка клика "Пробить номер"
-    checkBtn.addEventListener('click', () => {
-      let phone = phoneInput.value.replace(/\D/g, '');
-      if (phone.length !== 11) {
-        alert('Пожалуйста, введите корректный номер из 11 цифр, начиная с 7.');
-        return;
-      }
-      loadingDiv.style.display = 'block';
-      resultDiv.style.display = 'none';
-      resultText.textContent = '';
-
-      // Имитация обработки с задержкой
-      setTimeout(() => {
-        loadingDiv.style.display = 'none';
-
-        // Генерация "результата" с анимацией печатания
-        const data = generateFakeData(phone);
-        typeText(resultText, data, 0);
-
-        resultDiv.style.display = 'block';
-        resultDiv.focus();
-      }, 2000);
-    });
-
-    // Функция имитации "пробивки" номера с рандомными данными
-    function generateFakeData(phone) {
-      const operators = ['МТС', 'Билайн', 'Мегафон', 'Теле2', 'Yota'];
-      const regions = ['Москва', 'Санкт-Петербург', 'Новосибирск', 'Екатеринбург', 'Казань'];
-      const statuses = ['Активен', 'Заблокирован', 'Не найден', 'В розыске', 'Занят'];
-
-      let op = operators[Math.floor(Math.random() * operators.length)];
-      let reg = regions[Math.floor(Math.random() * regions.length)];
-      let status = statuses[Math.floor(Math.random() * statuses.length)];
-
-      return `Номер: +${phone}\nОператор: ${op}\nРегион: ${reg}\nСтатус: ${status}\nПроверка завершена успешно.`;
-    }
-
-    // Анимация печатания текста
-    function typeText(element, text, index) {
-      if (index < text.length) {
-        element.textContent += text.charAt(index);
-        setTimeout(() => typeText(element, text, index + 1), 40);
-      }
-    }
-
-    // КАНВАС: Волна (wave effect)
+    // Эффект волны
     const waveCanvas = document.getElementById('waveCanvas');
     const wCtx = waveCanvas.getContext('2d');
-    function resizeCanvas() {
-      waveCanvas.width = window.innerWidth;
-      waveCanvas.height = window.innerHeight;
-      rainCanvas.width = window.innerWidth;
-      rainCanvas.height = window.innerHeight;
-    }
-    window.addEventListener('resize', resizeCanvas);
-    resizeCanvas();
+    waveCanvas.width = window.innerWidth;
+    waveCanvas.height = window.innerHeight;
 
-    let waveTime = 0;
-    function drawWave() {
+    function drawWave(time) {
       wCtx.clearRect(0, 0, waveCanvas.width, waveCanvas.height);
-      wCtx.fillStyle = 'rgba(0, 255, 224, 0.15)';
       wCtx.beginPath();
-      let amplitude = 30;
-      let frequency = 0.02;
-      wCtx.moveTo(0, waveCanvas.height / 2);
-      for(let x = 0; x < waveCanvas.width; x++) {
-        let y = waveCanvas.height / 2 + Math.sin(x * frequency + waveTime) * amplitude;
+      for (let x = 0; x < waveCanvas.width; x++) {
+        const y = Math.sin(x * 0.01 + time * 0.002) * 20 + waveCanvas.height / 2;
         wCtx.lineTo(x, y);
       }
-      wCtx.lineTo(waveCanvas.width, waveCanvas.height);
-      wCtx.lineTo(0, waveCanvas.height);
-      wCtx.closePath();
-      wCtx.fill();
-      waveTime += 0.05;
+      wCtx.strokeStyle = '#00ffe044';
+      wCtx.lineWidth = 1;
+      wCtx.stroke();
       requestAnimationFrame(drawWave);
     }
-    drawWave();
+    drawWave(0);
 
-    // КАНВАС: Дождь (rain effect)
+    // Эффект дождя
     const rainCanvas = document.getElementById('rainCanvas');
     const rCtx = rainCanvas.getContext('2d');
-
-    class Drop {
-      constructor() {
-        this.x = Math.random() * rainCanvas.width;
-        this.y = Math.random() * rainCanvas.height;
-        this.length = 10 + Math.random() * 20;
-        this.speed = 4 + Math.random() * 4;
-        this.opacity = 0.1 + Math.random() * 0.3;
-      }
-      fall() {
-        this.y += this.speed;
-        if (this.y > rainCanvas.height) {
-          this.y = -this.length;
-          this.x = Math.random() * rainCanvas.width;
-          this.speed = 4 + Math.random() * 4;
-          this.opacity = 0.1 + Math.random() * 0.3;
-        }
-      }
-      draw() {
-        rCtx.strokeStyle = `rgba(0, 255, 224, ${this.opacity})`;
-        rCtx.lineWidth = 1;
-        rCtx.beginPath();
-        rCtx.moveTo(this.x, this.y);
-        rCtx.lineTo(this.x, this.y + this.length);
-        rCtx.stroke();
-      }
-    }
+    rainCanvas.width = window.innerWidth;
+    rainCanvas.height = window.innerHeight;
 
     let drops = [];
-    for(let i = 0; i < 100; i++) {
-      drops.push(new Drop());
+    for (let i = 0; i < 400; i++) {
+      drops.push({
+        x: Math.random() * rainCanvas.width,
+        y: Math.random() * rainCanvas.height,
+        length: Math.random() * 20 + 10,
+        speed: Math.random() * 5 + 4
+      });
     }
 
     function drawRain() {
       rCtx.clearRect(0, 0, rainCanvas.width, rainCanvas.height);
-      for(let drop of drops) {
-        drop.fall();
-        drop.draw();
+      rCtx.strokeStyle = '#00ffe066';
+      rCtx.lineWidth = 1;
+      for (let drop of drops) {
+        rCtx.beginPath();
+        rCtx.moveTo(drop.x, drop.y);
+        rCtx.lineTo(drop.x, drop.y + drop.length);
+        rCtx.stroke();
+        drop.y += drop.speed;
+        if (drop.y > rainCanvas.height) {
+          drop.y = -drop.length;
+          drop.x = Math.random() * rainCanvas.width;
+        }
       }
       requestAnimationFrame(drawRain);
     }
     drawRain();
 
+    // Обновление размеров при изменении окна
+    window.addEventListener('resize', () => {
+      waveCanvas.width = window.innerWidth;
+      waveCanvas.height = window.innerHeight;
+      rainCanvas.width = window.innerWidth;
+      rainCanvas.height = window.innerHeight;
+    });
   </script>
 </body>
 </html>
