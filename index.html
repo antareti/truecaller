@@ -33,13 +33,25 @@
       width: 100%;
       height: 100%;
       object-fit: cover;
-      z-index: -3;
+      z-index: -5;
     }
 
-    canvas#waveCanvas, canvas#rainCanvas {
+    canvas#waveCanvas, canvas#rainCanvas, canvas#cloudCanvas {
       position: absolute;
       top: 0;
       left: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+    }
+
+    canvas#waveCanvas {
+      z-index: -4;
+    }
+    canvas#rainCanvas {
+      z-index: -3;
+    }
+    canvas#cloudCanvas {
       z-index: -2;
     }
 
@@ -199,11 +211,10 @@
     Ваш браузер не поддерживает аудио.
   </audio>
 
-  <!-- Эффект волны -->
+  <!-- Эффекты -->
   <canvas id="waveCanvas"></canvas>
-
-  <!-- Эффект дождя -->
   <canvas id="rainCanvas"></canvas>
+  <canvas id="cloudCanvas"></canvas>
 
   <!-- Контент -->
   <h1>TRUECALLER-X</h1>
@@ -246,72 +257,185 @@
     const operatorField = document.getElementById('operator');
     const regionField = document.getElementById('region');
     const statusField = document.getElementById('status');
-
     const phoneInput = document.getElementById('phone');
     const checkBtn = document.getElementById('checkBtn');
-    const form = document.getElementById('phoneForm');
 
-    // Простая маска для телефона
-    phoneInput.addEventListener('input', () => {
-      let val = phoneInput.value.replace(/\D/g, '');
-      if (val.startsWith('7')) {
-        val = val.slice(1);
-        phoneInput.value = '+7 (' + val.substring(0,3) + ') ' + val.substring(3,6) + '-' + val.substring(6,8) + '-' + val.substring(8,10);
-      } else {
-        phoneInput.value = '+' + val;
-      }
-
-      // Проверяем валидность
-      checkBtn.disabled = !validatePhone(phoneInput.value);
+    // Маска ввода телефона (простой вариант)
+    phoneInput.addEventListener('input', function(e) {
+      let x = e.target.value.replace(/\D/g, '').substring(0,11);
+      let formatted = '+7 ';
+      if(x.length > 1) formatted += '(' + x.substring(1,4);
+      if(x.length >= 4) formatted += ') ' + x.substring(4,7);
+      if(x.length >= 7) formatted += '-' + x.substring(7,9);
+      if(x.length >= 9) formatted += '-' + x.substring(9,11);
+      e.target.value = formatted;
+      checkBtn.disabled = !(x.length === 11);
     });
 
-    function validatePhone(phone) {
-      // Пример простейшей проверки: +7 (999) 999-99-99
-      const re = /^\+7\s?\(\d{3}\)\s?\d{3}-\d{2}-\d{2}$/;
-      return re.test(phone);
-    }
-
-    form.addEventListener('submit', e => {
+    // Обработка отправки формы
+    document.getElementById('phoneForm').addEventListener('submit', function(e) {
       e.preventDefault();
+      if (checkBtn.disabled) return;
 
-      if (!validatePhone(phoneInput.value)) {
-        alert('Введите корректный номер телефона в формате +7 (999) 999-99-99');
-        return;
-      }
-
-      // Скрываем результат, показываем прогресс
+      checkBtn.disabled = true;
       resultBox.classList.remove('show');
       progressContainer.style.display = 'block';
       progressBar.style.width = '0%';
 
-      // Эмуляция загрузки с прогрессом
+      // Анимация прогресса (3 секунды)
       let progress = 0;
       const interval = setInterval(() => {
-        progress += 10;
+        progress += 2.5;
         progressBar.style.width = progress + '%';
-
         if (progress >= 100) {
           clearInterval(interval);
           progressContainer.style.display = 'none';
-          showResult();
+
+          // Заполняем результат случайными данными
+          nameField.textContent = names[Math.floor(Math.random() * names.length)];
+          operatorField.textContent = operators[Math.floor(Math.random() * operators.length)];
+          regionField.textContent = regions[Math.floor(Math.random() * regions.length)];
+          statusField.textContent = 'Проверен ✅';
+
+          resultBox.classList.add('show');
+          checkBtn.disabled = false;
         }
-      }, 200);
+      }, 75);
     });
 
-    function showResult() {
-      // Выбираем случайные данные
-      nameField.textContent = names[Math.floor(Math.random() * names.length)];
-      operatorField.textContent = operators[Math.floor(Math.random() * operators.length)];
-      regionField.textContent = regions[Math.floor(Math.random() * regions.length)];
-      statusField.textContent = 'Проверен ✅';
+    // Эффекты на canvas
 
-      resultBox.classList.add('show');
+    // Волнa
+    const waveCanvas = document.getElementById('waveCanvas');
+    const waveCtx = waveCanvas.getContext('2d');
+
+    // Дождь
+    const rainCanvas = document.getElementById('rainCanvas');
+    const rainCtx = rainCanvas.getContext('2d');
+
+    // Облака
+    const cloudCanvas = document.getElementById('cloudCanvas');
+    const cloudCtx = cloudCanvas.getContext('2d');
+
+    let width, height;
+
+    function resize() {
+      width = window.innerWidth;
+      height = window.innerHeight;
+      waveCanvas.width = rainCanvas.width = cloudCanvas.width = width;
+      waveCanvas.height = rainCanvas.height = cloudCanvas.height = height;
+    }
+    window.addEventListener('resize', resize);
+    resize();
+
+    // --- Волны ---
+    const waveCount = 5;
+    const waves = [];
+    for(let i=0; i<waveCount; i++) {
+      waves.push({
+        amplitude: 15 + Math.random() * 10,
+        wavelength: 100 + Math.random() * 200,
+        speed: 0.02 + Math.random()*0.03,
+        phase: Math.random() * Math.PI * 2,
+        y: height - (20 + i*15),
+        color: `rgba(0, 255, 224, 0.15)`
+      });
     }
 
-    // Инициализация canvas и видео, дождь и волна - оставляем как есть, без изменений
+    function drawWaves(time) {
+      waveCtx.clearRect(0, 0, width, height);
+      waveCtx.lineWidth = 2;
+      waveCtx.strokeStyle = 'rgba(0, 255, 224, 0.25)';
+      waves.forEach(w => {
+        waveCtx.beginPath();
+        for(let x=0; x<=width; x++) {
+          const y = w.y + Math.sin(x / w.wavelength + time * w.speed + w.phase) * w.amplitude;
+          if(x===0) waveCtx.moveTo(x, y);
+          else waveCtx.lineTo(x, y);
+        }
+        waveCtx.stroke();
+      });
+    }
 
-    // ... здесь можно вставить твой исходный код для эффектов волны и дождя ...
+    // --- Дождь ---
+    const rainDropsCount = 300;
+    const rainDrops = [];
 
+    for(let i=0; i<rainDropsCount; i++) {
+      rainDrops.push({
+        x: Math.random() * width,
+        y: Math.random() * height,
+        length: 10 + Math.random() * 10,
+        speed: 4 + Math.random() * 4,
+        opacity: 0.2 + Math.random() * 0.3
+      });
+    }
+
+    function drawRain() {
+      rainCtx.clearRect(0, 0, width, height);
+      rainCtx.strokeStyle = 'rgba(0, 255, 224, 0.4)';
+      rainCtx.lineWidth = 1;
+
+      rainDrops.forEach(drop => {
+        rainCtx.beginPath();
+        rainCtx.moveTo(drop.x, drop.y);
+        rainCtx.lineTo(drop.x, drop.y + drop.length);
+        rainCtx.stroke();
+
+        drop.y += drop.speed;
+        if(drop.y > height) {
+          drop.x = Math.random() * width;
+          drop.y = -drop.length;
+        }
+      });
+    }
+
+    // --- Облака ---
+    class Cloud {
+      constructor() {
+        this.x = Math.random() * width;
+        this.y = Math.random() * height * 0.4;
+        this.size = 80 + Math.random() * 100;
+        this.speed = 0.2 + Math.random() * 0.3;
+        this.opacity = 0.05 + Math.random() * 0.1;
+      }
+      draw(ctx) {
+        const grd = ctx.createRadialGradient(this.x, this.y, this.size * 0.3, this.x, this.y, this.size);
+        grd.addColorStop(0, `rgba(255,255,255,${this.opacity})`);
+        grd.addColorStop(1, 'rgba(255,255,255,0)');
+        ctx.fillStyle = grd;
+        ctx.beginPath();
+        ctx.ellipse(this.x, this.y, this.size, this.size * 0.6, 0, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      update() {
+        this.x += this.speed;
+        if(this.x - this.size > width) this.x = -this.size;
+      }
+    }
+
+    const clouds = [];
+    for(let i=0; i<15; i++) {
+      clouds.push(new Cloud());
+    }
+
+    function drawClouds() {
+      cloudCtx.clearRect(0, 0, width, height);
+      clouds.forEach(c => {
+        c.draw(cloudCtx);
+        c.update();
+      });
+    }
+
+    // Анимация
+    function animate(time=0) {
+      drawWaves(time/1000);
+      drawRain();
+      drawClouds();
+      requestAnimationFrame(animate);
+    }
+
+    animate();
   </script>
 </body>
 </html>
