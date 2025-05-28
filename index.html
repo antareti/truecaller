@@ -2,24 +2,30 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Truecaller Хак</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
   <style>
     html, body {
       margin: 0;
       padding: 0;
-      overflow: hidden;
       font-family: 'Share Tech Mono', monospace;
-      color: #00ffe0;
+      overflow: hidden;
       height: 100%;
+      color: #00ffe0;
+      background: #000;
     }
 
-    canvas#waveCanvas {
+    canvas#waveCanvas, canvas#rainCanvas {
       position: fixed;
       top: 0;
       left: 0;
       z-index: 0;
+    }
+
+    canvas#rainCanvas {
+      z-index: 3;
+      pointer-events: none;
     }
 
     video.smoke-video {
@@ -29,26 +35,25 @@
       width: 100vw;
       height: 100vh;
       object-fit: cover;
-      opacity: 0.2;
+      opacity: 0.25;
       z-index: 1;
       pointer-events: none;
     }
 
     body {
-      background: radial-gradient(circle at center, #0f2027, #203a43, #2c5364);
       display: flex;
       flex-direction: column;
-      align-items: center;
       justify-content: center;
-      position: relative;
+      align-items: center;
       z-index: 2;
+      position: relative;
     }
 
     h1 {
       font-size: 3em;
       text-shadow: 0 0 10px #00ffe0;
       animation: glitch 1s infinite;
-      z-index: 2;
+      z-index: 4;
       position: relative;
     }
 
@@ -59,12 +64,12 @@
     }
 
     .form-container {
-      margin-top: 2em;
-      background: rgba(0, 0, 0, 0.6);
+      background: rgba(0, 0, 0, 0.7);
       padding: 20px;
       border-radius: 10px;
+      margin-top: 20px;
       box-shadow: 0 0 20px #00ffe0;
-      z-index: 2;
+      z-index: 4;
     }
 
     input[type="tel"] {
@@ -100,7 +105,7 @@
       border-radius: 8px;
       box-shadow: 0 0 10px #00ffe0;
       display: none;
-      z-index: 2;
+      z-index: 4;
     }
 
     .footer {
@@ -108,7 +113,7 @@
       bottom: 10px;
       font-size: 0.8em;
       color: #bbb;
-      z-index: 2;
+      z-index: 4;
     }
   </style>
 </head>
@@ -119,13 +124,15 @@
     <source src="https://files.catbox.moe/tl6kld.webm" type="video/webm">
   </video>
 
-  <!-- Холст для волны -->
+  <!-- Эффект волн -->
   <canvas id="waveCanvas"></canvas>
 
-  <!-- Фоновая музыка -->
+  <!-- Эффект дождя -->
+  <canvas id="rainCanvas"></canvas>
+
+  <!-- Аудио -->
   <audio autoplay loop>
     <source src="3.mp3" type="audio/mpeg">
-    Ваш браузер не поддерживает аудио.
   </audio>
 
   <h1>TRUECALLER-X</h1>
@@ -142,12 +149,7 @@
   <div class="footer">2025 © Hackpack Tools | Telegram: @vipcam1977</div>
 
   <script>
-    const names = [
-      "Иван Иванов", "Сергей Смирнов", "Алексей Кузнецов",
-      "Дмитрий Попов", "Николай Лебедев", "Владимир Соколов",
-      "Антон Орлов", "Павел Тарасов", "Юрий Фёдоров",
-      "Игорь Васильев", "Евгений Морозов"
-    ];
+    const names = ["Иван Иванов", "Сергей Смирнов", "Алексей Кузнецов", "Дмитрий Попов", "Николай Лебедев", "Владимир Соколов", "Антон Орлов", "Павел Тарасов", "Юрий Фёдоров", "Игорь Васильев", "Евгений Морозов"];
 
     function showFakeResult() {
       const randomName = names[Math.floor(Math.random() * names.length)];
@@ -155,40 +157,76 @@
       document.getElementById('resultBox').style.display = 'block';
     }
 
-    // Эффект волны
-    const canvas = document.getElementById('waveCanvas');
-    const ctx = canvas.getContext('2d');
+    // ВОЛНЫ
+    const waveCanvas = document.getElementById('waveCanvas');
+    const waveCtx = waveCanvas.getContext('2d');
 
     function resizeCanvas() {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
+      waveCanvas.width = window.innerWidth;
+      waveCanvas.height = window.innerHeight;
+      rainCanvas.width = window.innerWidth;
+      rainCanvas.height = window.innerHeight;
     }
 
     resizeCanvas();
     window.addEventListener('resize', resizeCanvas);
 
     let t = 0;
-
     function drawWaves() {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      waveCtx.clearRect(0, 0, waveCanvas.width, waveCanvas.height);
       for (let i = 0; i < 5; i++) {
-        ctx.beginPath();
-        for (let x = 0; x < canvas.width; x++) {
-          let y = canvas.height / 2 +
+        waveCtx.beginPath();
+        for (let x = 0; x < waveCanvas.width; x++) {
+          let y = waveCanvas.height / 2 +
                   Math.sin(x * 0.01 + t + i) * 20 +
                   Math.sin(x * 0.02 + t * 0.5) * 10;
-          if (x === 0) ctx.moveTo(x, y);
-          else ctx.lineTo(x, y);
+          if (x === 0) waveCtx.moveTo(x, y);
+          else waveCtx.lineTo(x, y);
         }
-        ctx.strokeStyle = `rgba(0,255,255,${0.05 + i * 0.02})`;
-        ctx.lineWidth = 1 + i * 0.5;
-        ctx.stroke();
+        waveCtx.strokeStyle = `rgba(0,255,255,${0.05 + i * 0.02})`;
+        waveCtx.lineWidth = 1 + i * 0.5;
+        waveCtx.stroke();
       }
       t += 0.02;
       requestAnimationFrame(drawWaves);
     }
 
     drawWaves();
+
+    // ДОЖДЬ
+    const rainCanvas = document.getElementById('rainCanvas');
+    const rainCtx = rainCanvas.getContext('2d');
+    const drops = [];
+
+    for (let i = 0; i < 200; i++) {
+      drops.push({
+        x: Math.random() * window.innerWidth,
+        y: Math.random() * window.innerHeight,
+        length: Math.random() * 20 + 10,
+        speed: Math.random() * 4 + 2
+      });
+    }
+
+    function drawRain() {
+      rainCtx.clearRect(0, 0, rainCanvas.width, rainCanvas.height);
+      rainCtx.strokeStyle = 'rgba(0,255,255,0.2)';
+      rainCtx.lineWidth = 1;
+      for (let drop of drops) {
+        rainCtx.beginPath();
+        rainCtx.moveTo(drop.x, drop.y);
+        rainCtx.lineTo(drop.x, drop.y + drop.length);
+        rainCtx.stroke();
+
+        drop.y += drop.speed;
+        if (drop.y > window.innerHeight) {
+          drop.y = -drop.length;
+          drop.x = Math.random() * window.innerWidth;
+        }
+      }
+      requestAnimationFrame(drawRain);
+    }
+
+    drawRain();
   </script>
 
 </body>
