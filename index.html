@@ -40,8 +40,6 @@
       top: 0;
       left: 0;
       z-index: -2;
-      width: 100%;
-      height: 100%;
     }
 
     h1 {
@@ -64,6 +62,8 @@
       border-radius: 10px;
       box-shadow: 0 0 20px #00ffe0;
       z-index: 1;
+      display: flex;
+      align-items: center;
     }
 
     input[type="tel"] {
@@ -73,12 +73,17 @@
       border-radius: 5px;
       width: 250px;
       margin-right: 10px;
-      background-color: #0f2027;
+      outline: none;
       color: #00ffe0;
+      background: rgba(0,0,0,0.4);
+      border: 1px solid #00ffe0;
+      transition: 0.3s;
     }
 
-    input[type="tel"]::placeholder {
-      color: #00ffe0aa;
+    input[type="tel"]:focus {
+      background: rgba(0,0,0,0.7);
+      border-color: #00c9b7;
+      box-shadow: 0 0 10px #00ffe0;
     }
 
     button {
@@ -92,9 +97,16 @@
       transition: all 0.3s ease;
     }
 
-    button:hover {
+    button:hover:not(:disabled) {
       background-color: #00c9b7;
       box-shadow: 0 0 10px #00ffe0;
+    }
+
+    button:disabled {
+      cursor: not-allowed;
+      background-color: #00665e;
+      box-shadow: none;
+      color: #555;
     }
 
     .result {
@@ -106,6 +118,7 @@
       box-shadow: 0 0 10px #00ffe0;
       display: none;
       z-index: 1;
+      width: 300px;
     }
 
     .footer {
@@ -114,6 +127,26 @@
       font-size: 0.8em;
       color: #bbb;
       z-index: 1;
+    }
+
+    /* Прогресс-бар */
+    .progress-container {
+      width: 300px;
+      height: 20px;
+      background: rgba(0,0,0,0.4);
+      border-radius: 10px;
+      overflow: hidden;
+      margin-top: 20px;
+      box-shadow: 0 0 10px #00ffe0 inset;
+      display: none;
+      z-index: 1;
+    }
+
+    .progress-bar {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #00ffe0, #00c9b7);
+      transition: width 0.3s ease;
     }
   </style>
 </head>
@@ -140,18 +173,25 @@
   <h1>TRUECALLER-X</h1>
   <div class="form-container">
     <input type="tel" id="phone" placeholder="+7 (___) ___-__-__" maxlength="18" />
-    <button onclick="showFakeResult()">Пробить номер</button>
+    <button id="checkBtn" onclick="startCheck()">Пробить номер</button>
   </div>
+
+  <!-- Прогресс-бар -->
+  <div class="progress-container" id="progressContainer">
+    <div class="progress-bar" id="progressBar"></div>
+  </div>
+
   <div class="result" id="resultBox">
     <p><strong>Имя:</strong> <span id="name">Иван Иванов</span></p>
     <p><strong>Оператор:</strong> МТС</p>
     <p><strong>Регион:</strong> Москва</p>
     <p><strong>Статус:</strong> Проверен ✅</p>
   </div>
+
   <div class="footer">2025 © Hackpack Tools | Telegram: @vipcam1977</div>
 
   <script>
-    // Список рандомных имён
+    // Псевдослучайные имена
     const names = [
       "Иван Иванов", "Сергей Смирнов", "Алексей Кузнецов",
       "Дмитрий Попов", "Николай Лебедев", "Владимир Соколов",
@@ -159,18 +199,48 @@
       "Игорь Васильев", "Евгений Морозов"
     ];
 
-    function showFakeResult() {
-      const randomName = names[Math.floor(Math.random() * names.length)];
-      document.getElementById('name').innerText = randomName;
-      document.getElementById('resultBox').style.display = 'block';
+    const progressContainer = document.getElementById('progressContainer');
+    const progressBar = document.getElementById('progressBar');
+    const resultBox = document.getElementById('resultBox');
+    const checkBtn = document.getElementById('checkBtn');
+    const nameEl = document.getElementById('name');
+
+    function startCheck() {
+      // Скрыть результат, показать прогресс
+      resultBox.style.display = 'none';
+      progressContainer.style.display = 'block';
+      progressBar.style.width = '0%';
+      checkBtn.disabled = true;
+
+      let progress = 0;
+      const duration = 3000; // 3 секунды
+      const intervalTime = 30;
+      const increment = intervalTime / duration * 100;
+
+      const interval = setInterval(() => {
+        progress += increment;
+        if (progress >= 100) {
+          progress = 100;
+          clearInterval(interval);
+          showFakeResult();
+          checkBtn.disabled = false;
+          progressContainer.style.display = 'none';
+        }
+        progressBar.style.width = progress + '%';
+      }, intervalTime);
     }
 
-    // Эффект волны
+    function showFakeResult() {
+      const randomName = names[Math.floor(Math.random() * names.length)];
+      nameEl.innerText = randomName;
+      resultBox.style.display = 'block';
+    }
+
+    // Волна
     const waveCanvas = document.getElementById('waveCanvas');
     const wCtx = waveCanvas.getContext('2d');
     waveCanvas.width = window.innerWidth;
     waveCanvas.height = window.innerHeight;
-
     function drawWave(time) {
       wCtx.clearRect(0, 0, waveCanvas.width, waveCanvas.height);
       wCtx.beginPath();
@@ -185,12 +255,11 @@
     }
     drawWave(0);
 
-    // Эффект дождя
+    // Дождь
     const rainCanvas = document.getElementById('rainCanvas');
     const rCtx = rainCanvas.getContext('2d');
     rainCanvas.width = window.innerWidth;
     rainCanvas.height = window.innerHeight;
-
     let drops = [];
     for (let i = 0; i < 400; i++) {
       drops.push({
@@ -220,7 +289,7 @@
     }
     drawRain();
 
-    // Обновление размеров при изменении окна
+    // Обновление размеров канвасов при изменении окна
     window.addEventListener('resize', () => {
       waveCanvas.width = window.innerWidth;
       waveCanvas.height = window.innerHeight;
