@@ -2,124 +2,299 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Truecaller Хак</title>
-  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
   <style>
-    /* Стили тут не менялись. Всё включено: дождь, глаза, облака, тени, анимации и т.д. */
-    /* ...Оригинальные стили из твоего запроса... */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Share Tech Mono', monospace;
+      background: radial-gradient(circle at center, #0f2027, #203a43, #2c5364);
+      color: #00ffe0;
+      overflow: hidden;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      position: relative;
+    }
+
+    video.bg-video {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: -3;
+    }
+
+    canvas#waveCanvas, canvas#rainCanvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: -2;
+    }
+
+    h1 {
+      font-size: 3em;
+      text-shadow: 0 0 10px #00ffe0;
+      animation: glitch 1s infinite;
+      z-index: 1;
+    }
+
+    @keyframes glitch {
+      0% { text-shadow: 2px 2px #ff00c8; }
+      50% { text-shadow: -2px -2px #00ffe0; }
+      100% { text-shadow: 2px 2px #ff00c8; }
+    }
+
+    .form-container {
+      margin-top: 2em;
+      background: rgba(0, 0, 0, 0.6);
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 20px #00ffe0;
+      z-index: 1;
+      display: flex;
+      align-items: center;
+    }
+
+    input[type="tel"] {
+      padding: 10px;
+      font-size: 1.2em;
+      border: none;
+      border-radius: 5px;
+      width: 250px;
+      margin-right: 10px;
+      outline: none;
+      color: #00ffe0;
+      background: rgba(0,0,0,0.4);
+      border: 1px solid #00ffe0;
+      transition: 0.3s;
+    }
+
+    input[type="tel"]:focus {
+      background: rgba(0,0,0,0.7);
+      border-color: #00c9b7;
+      box-shadow: 0 0 10px #00ffe0;
+    }
+
+    button {
+      padding: 10px 20px;
+      font-size: 1.2em;
+      border: none;
+      border-radius: 5px;
+      background-color: #00ffe0;
+      color: #000;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    button:hover:not(:disabled) {
+      background-color: #00c9b7;
+      box-shadow: 0 0 10px #00ffe0;
+    }
+
+    button:disabled {
+      cursor: not-allowed;
+      background-color: #00665e;
+      box-shadow: none;
+      color: #555;
+    }
+
+    .result {
+      margin-top: 20px;
+      padding: 15px;
+      background: rgba(0, 0, 0, 0.5);
+      border: 1px solid #00ffe0;
+      border-radius: 8px;
+      box-shadow: 0 0 10px #00ffe0;
+      display: none;
+      z-index: 1;
+      width: 300px;
+    }
+
+    .footer {
+      position: absolute;
+      bottom: 10px;
+      font-size: 0.8em;
+      color: #bbb;
+      z-index: 1;
+    }
+
+    /* Прогресс-бар */
+    .progress-container {
+      width: 300px;
+      height: 20px;
+      background: rgba(0,0,0,0.4);
+      border-radius: 10px;
+      overflow: hidden;
+      margin-top: 20px;
+      box-shadow: 0 0 10px #00ffe0 inset;
+      display: none;
+      z-index: 1;
+    }
+
+    .progress-bar {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #00ffe0, #00c9b7);
+      transition: width 0.3s ease;
+    }
   </style>
 </head>
 <body>
+  <!-- Фоновое видео -->
+  <video class="bg-video" autoplay loop muted>
+    <source src="smoke.webm" type="video/webm" />
+    Ваш браузер не поддерживает видео.
+  </video>
 
-  <!-- 🎵 Фоновая музыка -->
+  <!-- Фоновая музыка -->
   <audio autoplay loop>
-    <source src="3.mp3" type="audio/mpeg">
+    <source src="3.mp3" type="audio/mpeg" />
     Ваш браузер не поддерживает аудио.
   </audio>
 
-  <!-- 👁️ Глаза -->
-  <div id="eyesContainer">
-    <div class="eye">
-      <svg viewBox="0 0 100 100">
-        <circle class="iris" cx="50" cy="50" r="20"/>
-        <circle class="pupil" cx="50" cy="50" r="10"/>
-        <circle class="highlight" cx="40" cy="40" r="5"/>
-      </svg>
-    </div>
-    <div class="eye">
-      <svg viewBox="0 0 100 100">
-        <circle class="iris" cx="50" cy="50" r="20"/>
-        <circle class="pupil" cx="50" cy="50" r="10"/>
-        <circle class="highlight" cx="40" cy="40" r="5"/>
-      </svg>
-    </div>
-  </div>
+  <!-- Эффект волны -->
+  <canvas id="waveCanvas"></canvas>
 
-  <!-- 🌧️ Эффект дождя -->
-  <div class="rain" id="rain"></div>
+  <!-- Эффект дождя -->
+  <canvas id="rainCanvas"></canvas>
 
-  <!-- ☁️ Облака -->
-  <div class="clouds">
-    <div class="cloud cloud1"></div>
-    <div class="cloud cloud2"></div>
-    <div class="cloud cloud3"></div>
-  </div>
-
-  <!-- Заголовок -->
-  <h1>Truecaller Хак</h1>
-
-  <!-- 📱 Форма ввода -->
+  <!-- Контент -->
+  <h1>TRUECALLER-X</h1>
   <div class="form-container">
-    <input type="tel" placeholder="Введите номер" id="phone" />
-    <button id="submit">Хакнуть</button>
+    <input type="tel" id="phone" placeholder="+7 (___) ___-__-__" maxlength="18" />
+    <button id="checkBtn" onclick="startCheck()">Пробить номер</button>
   </div>
 
-  <!-- ⏳ Прогресс-бар -->
-  <progress id="progressBar" value="0" max="100" style="width: 100%; margin-top: 20px;"></progress>
+  <!-- Прогресс-бар -->
+  <div class="progress-container" id="progressContainer">
+    <div class="progress-bar" id="progressBar"></div>
+  </div>
 
-  <!-- 📄 Результаты -->
   <div class="result" id="resultBox">
-    <p id="resultText">Результат появится здесь</p>
+    <p><strong>Имя:</strong> <span id="name">Иван Иванов</span></p>
+    <p><strong>Оператор:</strong> МТС</p>
+    <p><strong>Регион:</strong> Москва</p>
+    <p><strong>Статус:</strong> Проверен ✅</p>
   </div>
 
-  <!-- JS Логика -->
+  <div class="footer">2025 © Hackpack Tools | Telegram: @vipcam1977</div>
+
   <script>
-    // Эффект дождя
-    const rainContainer = document.getElementById("rain");
-    for (let i = 0; i < 150; i++) {
-      const drop = document.createElement("div");
-      drop.className = "drop";
-      drop.style.left = Math.random() * 100 + "vw";
-      drop.style.animationDuration = 0.5 + Math.random() + "s";
-      drop.style.animationDelay = Math.random() * 2 + "s";
-      rainContainer.appendChild(drop);
+    // Псевдослучайные имена
+    const names = [
+      "Иван Иванов", "Сергей Смирнов", "Алексей Кузнецов",
+      "Дмитрий Попов", "Николай Лебедев", "Владимир Соколов",
+      "Антон Орлов", "Павел Тарасов", "Юрий Фёдоров",
+      "Игорь Васильев", "Евгений Морозов"
+    ];
+
+    const progressContainer = document.getElementById('progressContainer');
+    const progressBar = document.getElementById('progressBar');
+    const resultBox = document.getElementById('resultBox');
+    const checkBtn = document.getElementById('checkBtn');
+    const nameEl = document.getElementById('name');
+
+    function startCheck() {
+      // Скрыть результат, показать прогресс
+      resultBox.style.display = 'none';
+      progressContainer.style.display = 'block';
+      progressBar.style.width = '0%';
+      checkBtn.disabled = true;
+
+      let progress = 0;
+      const duration = 3000; // 3 секунды
+      const intervalTime = 30;
+      const increment = intervalTime / duration * 100;
+
+      const interval = setInterval(() => {
+        progress += increment;
+        if (progress >= 100) {
+          progress = 100;
+          clearInterval(interval);
+          showFakeResult();
+          checkBtn.disabled = false;
+          progressContainer.style.display = 'none';
+        }
+        progressBar.style.width = progress + '%';
+      }, intervalTime);
     }
 
-    // Глаза следят за мышью
-    const eyes = document.querySelectorAll('.eye svg');
-    document.addEventListener('mousemove', (e) => {
-      eyes.forEach(eye => {
-        const iris = eye.querySelector('.iris');
-        const pupil = eye.querySelector('.pupil');
-        const rect = eye.getBoundingClientRect();
-        const centerX = rect.left + rect.width / 2;
-        const centerY = rect.top + rect.height / 2;
-        const deltaX = e.clientX - centerX;
-        const deltaY = e.clientY - centerY;
-        const angle = Math.atan2(deltaY, deltaX);
-        const irisX = 50 + Math.cos(angle) * 15;
-        const irisY = 50 + Math.sin(angle) * 15;
-        const pupilX = 50 + Math.cos(angle) * 7;
-        const pupilY = 50 + Math.sin(angle) * 7;
-        iris.setAttribute("cx", irisX);
-        iris.setAttribute("cy", irisY);
-        pupil.setAttribute("cx", pupilX);
-        pupil.setAttribute("cy", pupilY);
+    function showFakeResult() {
+      const randomName = names[Math.floor(Math.random() * names.length)];
+      nameEl.innerText = randomName;
+      resultBox.style.display = 'block';
+    }
+
+    // Волна
+    const waveCanvas = document.getElementById('waveCanvas');
+    const wCtx = waveCanvas.getContext('2d');
+    waveCanvas.width = window.innerWidth;
+    waveCanvas.height = window.innerHeight;
+    function drawWave(time) {
+      wCtx.clearRect(0, 0, waveCanvas.width, waveCanvas.height);
+      wCtx.beginPath();
+      for (let x = 0; x < waveCanvas.width; x++) {
+        const y = Math.sin(x * 0.01 + time * 0.002) * 20 + waveCanvas.height / 2;
+        wCtx.lineTo(x, y);
+      }
+      wCtx.strokeStyle = '#00ffe044';
+      wCtx.lineWidth = 1;
+      wCtx.stroke();
+      requestAnimationFrame(drawWave);
+    }
+    drawWave(0);
+
+    // Дождь
+    const rainCanvas = document.getElementById('rainCanvas');
+    const rCtx = rainCanvas.getContext('2d');
+    rainCanvas.width = window.innerWidth;
+    rainCanvas.height = window.innerHeight;
+    let drops = [];
+    for (let i = 0; i < 400; i++) {
+      drops.push({
+        x: Math.random() * rainCanvas.width,
+        y: Math.random() * rainCanvas.height,
+        length: Math.random() * 20 + 10,
+        speed: Math.random() * 5 + 4
       });
-    });
+    }
 
-    // Кнопка запуска
-    const btn = document.getElementById('submit');
-    const progress = document.getElementById('progressBar');
-    const resultBox = document.getElementById('resultBox');
-    const resultText = document.getElementById('resultText');
-
-    btn.addEventListener('click', () => {
-      btn.disabled = true;
-      progress.value = 0;
-      resultBox.classList.remove('show');
-      let i = 0;
-      const interval = setInterval(() => {
-        i += 1;
-        progress.value = i;
-        if (i >= 100) {
-          clearInterval(interval);
-          resultBox.classList.add('show');
-          resultText.textContent = 'Хак завершён! Информация получена.';
-          btn.disabled = false;
+    function drawRain() {
+      rCtx.clearRect(0, 0, rainCanvas.width, rainCanvas.height);
+      rCtx.strokeStyle = '#00ffe066';
+      rCtx.lineWidth = 1;
+      for (let drop of drops) {
+        rCtx.beginPath();
+        rCtx.moveTo(drop.x, drop.y);
+        rCtx.lineTo(drop.x, drop.y + drop.length);
+        rCtx.stroke();
+        drop.y += drop.speed;
+        if (drop.y > rainCanvas.height) {
+          drop.y = -drop.length;
+          drop.x = Math.random() * rainCanvas.width;
         }
-      }, 50);
+      }
+      requestAnimationFrame(drawRain);
+    }
+    drawRain();
+
+    // Обновление размеров канвасов при изменении окна
+    window.addEventListener('resize', () => {
+      waveCanvas.width = window.innerWidth;
+      waveCanvas.height = window.innerHeight;
+      rainCanvas.width = window.innerWidth;
+      rainCanvas.height = window.innerHeight;
     });
   </script>
 </body>
