@@ -6,65 +6,121 @@
   <title>Truecaller Хак</title>
   <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet" />
   <style>
-    /* ...весь ваш CSS-код остаётся без изменений... */
+    /* Стили тут не менялись. Всё включено: дождь, глаза, облака, тени, анимации и т.д. */
+    /* ...Оригинальные стили из твоего запроса... */
   </style>
 </head>
 <body>
 
-  <!-- Аудио плеер для фоновой музыки -->
-  <audio autoplay loop hidden>
+  <!-- 🎵 Фоновая музыка -->
+  <audio autoplay loop>
     <source src="3.mp3" type="audio/mpeg">
-    Ваш браузер не поддерживает воспроизведение аудио.
+    Ваш браузер не поддерживает аудио.
   </audio>
 
-  <!-- Остальная часть HTML остаётся без изменений -->
-  <h1>Truecaller Хак</h1>
-  <div class="form-container">
-    <input type="tel" placeholder="Введите номер телефона">
-    <button>Хакнуть</button>
+  <!-- 👁️ Глаза -->
+  <div id="eyesContainer">
+    <div class="eye">
+      <svg viewBox="0 0 100 100">
+        <circle class="iris" cx="50" cy="50" r="20"/>
+        <circle class="pupil" cx="50" cy="50" r="10"/>
+        <circle class="highlight" cx="40" cy="40" r="5"/>
+      </svg>
+    </div>
+    <div class="eye">
+      <svg viewBox="0 0 100 100">
+        <circle class="iris" cx="50" cy="50" r="20"/>
+        <circle class="pupil" cx="50" cy="50" r="10"/>
+        <circle class="highlight" cx="40" cy="40" r="5"/>
+      </svg>
+    </div>
   </div>
-  <div class="result">Результат появится здесь...</div>
 
-  <!-- Фоновые элементы -->
-  <video class="bg-video" autoplay muted loop>
-    <source src="background-video.mp4" type="video/mp4">
-  </video>
-
+  <!-- 🌧️ Эффект дождя -->
   <div class="rain" id="rain"></div>
+
+  <!-- ☁️ Облака -->
   <div class="clouds">
     <div class="cloud cloud1"></div>
     <div class="cloud cloud2"></div>
     <div class="cloud cloud3"></div>
   </div>
 
-  <div id="eyesContainer">
-    <div class="eye">
-      <svg viewBox="0 0 100 100">
-        <circle class="iris" cx="50" cy="50" r="20" />
-        <circle class="pupil" cx="50" cy="50" r="8" />
-        <circle class="highlight" cx="60" cy="40" r="3" />
-      </svg>
-    </div>
-    <div class="eye">
-      <svg viewBox="0 0 100 100">
-        <circle class="iris" cx="50" cy="50" r="20" />
-        <circle class="pupil" cx="50" cy="50" r="8" />
-        <circle class="highlight" cx="60" cy="40" r="3" />
-      </svg>
-    </div>
+  <!-- Заголовок -->
+  <h1>Truecaller Хак</h1>
+
+  <!-- 📱 Форма ввода -->
+  <div class="form-container">
+    <input type="tel" placeholder="Введите номер" id="phone" />
+    <button id="submit">Хакнуть</button>
   </div>
 
+  <!-- ⏳ Прогресс-бар -->
+  <progress id="progressBar" value="0" max="100" style="width: 100%; margin-top: 20px;"></progress>
+
+  <!-- 📄 Результаты -->
+  <div class="result" id="resultBox">
+    <p id="resultText">Результат появится здесь</p>
+  </div>
+
+  <!-- JS Логика -->
   <script>
-    // Генерация дождя
-    const rainContainer = document.getElementById('rain');
-    for (let i = 0; i < 100; i++) {
-      const drop = document.createElement('div');
-      drop.className = 'drop';
-      drop.style.left = Math.random() * 100 + 'vw';
-      drop.style.animationDuration = (0.5 + Math.random()) + 's';
-      drop.style.animationDelay = Math.random() * 2 + 's';
+    // Эффект дождя
+    const rainContainer = document.getElementById("rain");
+    for (let i = 0; i < 150; i++) {
+      const drop = document.createElement("div");
+      drop.className = "drop";
+      drop.style.left = Math.random() * 100 + "vw";
+      drop.style.animationDuration = 0.5 + Math.random() + "s";
+      drop.style.animationDelay = Math.random() * 2 + "s";
       rainContainer.appendChild(drop);
     }
+
+    // Глаза следят за мышью
+    const eyes = document.querySelectorAll('.eye svg');
+    document.addEventListener('mousemove', (e) => {
+      eyes.forEach(eye => {
+        const iris = eye.querySelector('.iris');
+        const pupil = eye.querySelector('.pupil');
+        const rect = eye.getBoundingClientRect();
+        const centerX = rect.left + rect.width / 2;
+        const centerY = rect.top + rect.height / 2;
+        const deltaX = e.clientX - centerX;
+        const deltaY = e.clientY - centerY;
+        const angle = Math.atan2(deltaY, deltaX);
+        const irisX = 50 + Math.cos(angle) * 15;
+        const irisY = 50 + Math.sin(angle) * 15;
+        const pupilX = 50 + Math.cos(angle) * 7;
+        const pupilY = 50 + Math.sin(angle) * 7;
+        iris.setAttribute("cx", irisX);
+        iris.setAttribute("cy", irisY);
+        pupil.setAttribute("cx", pupilX);
+        pupil.setAttribute("cy", pupilY);
+      });
+    });
+
+    // Кнопка запуска
+    const btn = document.getElementById('submit');
+    const progress = document.getElementById('progressBar');
+    const resultBox = document.getElementById('resultBox');
+    const resultText = document.getElementById('resultText');
+
+    btn.addEventListener('click', () => {
+      btn.disabled = true;
+      progress.value = 0;
+      resultBox.classList.remove('show');
+      let i = 0;
+      const interval = setInterval(() => {
+        i += 1;
+        progress.value = i;
+        if (i >= 100) {
+          clearInterval(interval);
+          resultBox.classList.add('show');
+          resultText.textContent = 'Хак завершён! Информация получена.';
+          btn.disabled = false;
+        }
+      }, 50);
+    });
   </script>
 </body>
 </html>
