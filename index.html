@@ -6,7 +6,11 @@
   <title>Truecaller Хак</title>
   <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
     body {
       font-family: 'Share Tech Mono', monospace;
@@ -23,15 +27,18 @@
 
     video.bg-video {
       position: absolute;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
       object-fit: cover;
       z-index: -3;
     }
 
     canvas#waveCanvas, canvas#rainCanvas {
       position: absolute;
-      top: 0; left: 0;
+      top: 0;
+      left: 0;
       z-index: -2;
     }
 
@@ -143,11 +150,13 @@
   </style>
 </head>
 <body>
+  <!-- Фоновое видео panther.mp4 -->
   <video class="bg-video" autoplay loop muted>
-    <source src="smoke.webm" type="video/webm" />
+    <source src="panther.mp4" type="video/mp4" />
     Ваш браузер не поддерживает видео.
   </video>
 
+  <!-- Фоновая музыка -->
   <audio autoplay loop>
     <source src="3.mp3" type="audio/mpeg" />
     Ваш браузер не поддерживает аудио.
@@ -157,7 +166,6 @@
   <canvas id="rainCanvas"></canvas>
 
   <h1>TRUECALLER-X</h1>
-
   <div class="form-container">
     <input type="tel" id="phone" placeholder="+7 (___) ___-__-__" maxlength="18" />
     <button id="checkBtn" onclick="startCheck()">Пробить номер</button>
